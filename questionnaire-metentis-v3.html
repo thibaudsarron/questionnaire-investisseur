@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire Profil Investisseur – Metentis Patrimoine</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ── RESET & BASE ─────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1a3a2e;
+  --green-light:#254d3d;
+  --green-mid:#1e4435;
+  --gold:#c8a96e;
+  --gold-light:#d9bf91;
+  --cream:#f7f6f2;
+  --white:#ffffff;
+  --text:#1a1a1a;
+  --text-soft:#4a4a4a;
+  --text-muted:#7a7a7a;
+  --border:#d8d4c8;
+  --border-light:#ece9e1;
+  --shadow:rgba(26,58,46,.10);
+  --shadow-md:rgba(26,58,46,.16);
+  --err:#b33;
+  --err-bg:#fff0f0;
+}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:15px}
+
+/* ── HEADER ──────────────────────────────────── */
+.header{background:var(--green);padding:16px 36px;display:flex;align-items:center;gap:20px;box-shadow:0 2px 12px var(--shadow-md)}
+.header-logo{height:auto;max-height:52px;max-width:240px;width:auto;filter:brightness(0) invert(1);flex-shrink:0;display:block}
+.header-divider{width:1px;height:38px;background:rgba(200,169,110,.35);margin:0 6px}
+.header-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold-light);letter-spacing:.5px;font-weight:400}
+.header-sub{font-size:.72rem;color:rgba(200,169,110,.6);margin-top:2px;letter-spacing:.3px}
+
+/* ── PROGRESS ────────────────────────────────── */
+.prog-wrap{background:var(--green-mid);padding:10px 36px 14px}
+.prog-bg{background:rgba(255,255,255,.12);border-radius:20px;height:5px}
+.prog-fill{background:var(--gold);border-radius:20px;height:5px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.prog-lbl{color:rgba(200,169,110,.75);font-size:.72rem;letter-spacing:.4px}
+.prog-steps{display:flex;gap:5px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .3s}
+.prog-dot.done{background:var(--gold)}
+.prog-dot.active{background:var(--white)}
+
+/* ── CONTAINER ───────────────────────────────── */
+.container{max-width:820px;margin:32px auto;padding:0 20px 60px}
+
+/* ── CARD ────────────────────────────────────── */
+.card{background:var(--white);border-radius:14px;box-shadow:0 2px 20px var(--shadow);padding:36px 40px;margin-bottom:20px;border:1px solid var(--border-light)}
+
+/* ── BADGE ───────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:var(--gold);font-size:.68rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:18px}
+.badge-esg{background:#1d4e1d}
+
+/* ── QUESTION TEXT ───────────────────────────── */
+h2.qt{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:var(--green);margin-bottom:16px;line-height:1.55}
+h3.st{font-size:.88rem;font-weight:600;color:var(--green);margin:22px 0 10px;border-left:3px solid var(--gold);padding-left:11px}
+p.qt-text{font-size:.88rem;color:var(--text-soft);margin-bottom:14px;line-height:1.65}
+.info-box{background:var(--cream);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 16px;font-size:.82rem;color:var(--text-soft);margin-bottom:18px;line-height:1.6}
+
+/* ── OPTIONS ─────────────────────────────────── */
+.opts{list-style:none;display:flex;flex-direction:column;gap:8px}
+.opts li label{display:flex;align-items:flex-start;gap:11px;padding:11px 15px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:.87rem;line-height:1.5;transition:border-color .2s,background .2s,box-shadow .2s;color:var(--text-soft)}
+.opts li label:hover{border-color:var(--green);background:#f4f8f5;box-shadow:0 1px 6px var(--shadow)}
+.opts li label input{margin-top:2px;flex-shrink:0;accent-color:var(--green)}
+.opts li:has(input:checked) label{border-color:var(--green);background:#eef5f0;color:var(--text);font-weight:500;box-shadow:0 1px 8px var(--shadow)}
+
+/* ── INPUTS ──────────────────────────────────── */
+.txt-in{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:'Outfit',sans-serif;outline:none;background:var(--white);color:var(--text);transition:border-color .2s}
+.txt-in:focus{border-color:var(--green)}
+.input-label{font-size:.85rem;font-weight:500;color:var(--green);display:block;margin-bottom:6px}
+.input-group{margin-bottom:16px}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+
+/* ── OPERATIONS BLOCK ────────────────────────── */
+.pblock{border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:14px;background:#fafaf8}
+.pname{font-weight:600;color:var(--green);font-size:.9rem;margin-bottom:12px;font-family:'Playfair Display',serif}
+.ops-lbl{font-size:.78rem;color:var(--text-muted);margin-top:12px;margin-bottom:7px;font-style:italic}
+.ops-row{display:flex;gap:10px;flex-wrap:wrap}
+.ops-row label{display:flex;align-items:center;gap:7px;font-size:.83rem;cursor:pointer;padding:7px 14px;border:1.5px solid var(--border);border-radius:7px;transition:border-color .2s,background .2s;color:var(--text-soft)}
+.ops-row label:hover{border-color:var(--green)}
+.ops-row label:has(input:checked){border-color:var(--green);background:#eef5f0;font-weight:600;color:var(--text)}
+
+/* ── NAVIGATION ──────────────────────────────── */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px}
+.btn{padding:11px 28px;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;font-family:'Outfit',sans-serif}
+.btn:active{transform:translateY(1px)}
+.btn-prev{background:var(--border-light);color:var(--green)}.btn-prev:hover{background:var(--border)}
+.btn-next{background:var(--green);color:var(--white)}.btn-next:hover{background:var(--green-light)}
+.btn-valider{background:var(--gold);color:var(--white);font-size:1rem;padding:13px 44px}.btn-valider:hover{background:#b8943e}
+.btn-pdf{background:var(--green);color:var(--white)}.btn-pdf:hover{background:var(--green-light)}
+.btn-email{background:var(--gold);color:var(--white)}.btn-email:hover{background:#b8943e}
+.btn-admin{background:transparent;color:var(--text-muted);border:1px solid var(--border);font-size:.8rem;padding:7px 14px;border-radius:7px;cursor:pointer;font-family:'Outfit',sans-serif}
+.btn-admin:hover{border-color:var(--green);color:var(--green)}
+
+/* ── ERRORS ──────────────────────────────────── */
+.err{color:var(--err);font-size:.8rem;margin-top:8px;display:none;padding:7px 12px;background:var(--err-bg);border-left:3px solid var(--err);border-radius:4px}
+#alert-banner{display:none;position:sticky;top:0;z-index:100;background:#b33;color:#fff;text-align:center;padding:11px 20px;font-size:.88rem;font-weight:600;letter-spacing:.2px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+
+/* ── LOADING ─────────────────────────────────── */
+#pdf-loading{display:none;position:fixed;inset:0;background:rgba(247,246,242,.97);z-index:99999;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-size:1rem;color:var(--green);font-weight:600}
+#pdf-loading .spinner{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── RESULTS ─────────────────────────────────── */
+#res-page{display:none}
+.res-hdr{background:var(--green);color:var(--white);padding:28px 36px;border-radius:14px 14px 0 0;display:flex;align-items:center;gap:20px}
+.res-hdr-txt{flex:1;text-align:center}
+.res-hdr h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:4px}
+.res-hdr p{font-size:.83rem;color:var(--gold-light)}
+.res-body{background:var(--white);border-radius:0 0 14px 14px;box-shadow:0 4px 24px var(--shadow-md);padding:32px 36px;border:1px solid var(--border-light);border-top:none}
+.dim{border:1.5px solid var(--border);border-radius:11px;padding:22px 26px;margin-bottom:18px;transition:border-color .3s}
+.dim:hover{border-color:var(--gold)}
+.dim-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.dim-name{font-family:'Playfair Display',serif;font-weight:700;color:var(--green);font-size:.98rem}
+.dim-badge{background:var(--green);color:var(--gold);font-weight:700;padding:5px 16px;border-radius:20px;font-size:.85rem;letter-spacing:.3px}
+.dim-badge-gold{background:var(--gold);color:var(--white)}
+.dim-cmt{font-size:.85rem;color:var(--text-soft);line-height:1.6;margin-top:10px}
+.dim-sc{font-size:.75rem;color:var(--text-muted);margin-top:6px}
+
+/* Profile gradient bar */
+.profile-bar-wrap{position:relative;margin:14px 0 8px}
+.profile-grad{position:relative;height:18px;border-radius:10px;overflow:visible;margin-bottom:0}
+.profile-marker{position:absolute;top:-22px;transform:translateX(-50%);font-size:18px;color:var(--gold);font-weight:700;transition:left .9s;pointer-events:none;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
+.profile-levels{display:flex;margin-top:6px;gap:2px}
+.profile-level{text-align:center;font-size:.67rem;color:var(--text-muted);padding:3px 3px;border-radius:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.35;flex-shrink:0;transition:background .3s,color .3s}
+.profile-level.active{background:var(--green);color:var(--gold);font-weight:700}
+.grad-connaissance{background:linear-gradient(to right,#a8c4db,#5a8cb5,#1a3a2e)}
+.grad-risque{background:linear-gradient(to right,#4caf50,#9ac93d,#ffc107,#ff9800,#f44336)}
+.grad-esg{background:linear-gradient(to right,#bdbdbd,#a5d6a7,#66bb6a,#1b5e20)}
+.res-acts{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px;justify-content:center}
+
+/* ── ADMIN PANEL ─────────────────────────────── */
+#admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center}
+#admin-panel{background:var(--white);border-radius:14px;padding:32px;max-width:680px;width:calc(100% - 40px);max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+#admin-panel h3{font-family:'Playfair Display',serif;color:var(--green);font-size:1.2rem;margin-bottom:6px}
+#admin-panel .adm-sub{font-size:.82rem;color:var(--text-muted);margin-bottom:24px}
+.adm-section{margin-bottom:24px}
+.adm-section h4{font-size:.88rem;font-weight:600;color:var(--green);margin-bottom:12px;border-bottom:1px solid var(--border-light);padding-bottom:6px}
+.adm-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.adm-row label{font-size:.82rem;color:var(--text-soft);min-width:220px;flex-shrink:0}
+.adm-row input[type="number"]{width:80px;padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:.85rem;text-align:center}
+.adm-row input[type="number"]:focus{outline:none;border-color:var(--green)}
+.adm-actions{display:flex;gap:12px;margin-top:20px;justify-content:flex-end}
+.btn-adm-save{background:var(--green);color:var(--white);padding:9px 24px;border:none;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif}
+.btn-adm-close{background:var(--border-light);color:var(--green);padding:9px 24px;border:none;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif}
+#admin-pw-wrap{display:flex;flex-direction:column;gap:14px}
+#admin-pw-wrap input{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:'Outfit',sans-serif}
+#admin-pw-err{color:var(--err);font-size:.82rem;display:none}
+
+/* ── ANSWERS RECAP ───────────────────────────── */
+#answers-section{margin-top:24px;background:var(--white);border-radius:12px;padding:26px 30px;border:1px solid var(--border-light)}
+.pdf-sec{font-size:.95rem;font-weight:700;color:var(--green);margin:20px 0 8px;border-bottom:2px solid var(--gold);padding-bottom:4px;font-family:'Playfair Display',serif}
+.pdf-sec:first-child{margin-top:0}
+.pdf-q{font-size:.83rem;font-weight:600;color:var(--text);margin:10px 0 3px}
+.pdf-opts{padding-left:10px;margin-bottom:2px}
+.ans-opt{font-size:.8rem;color:var(--text-muted);padding:1px 0;line-height:1.5}
+.ans-sel{font-weight:700;color:var(--green)}
+.ans-toggle{background:none;border:1.5px solid var(--green);color:var(--green);border-radius:8px;padding:8px 20px;font-size:.83rem;font-weight:600;cursor:pointer;margin-top:16px;font-family:'Outfit',sans-serif}
+.ans-toggle:hover{background:#eef5f0}
+
+/* ── PDF HIDDEN DIV ──────────────────────────── */
+#pdf-div{display:none;width:780px;font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#222;background:#fff;padding:40px}
+#pdf-div h1{font-size:18px;color:#1a3a2e;margin-bottom:2px;font-family:'Playfair Display',Georgia,serif}
+#pdf-div .pd-sub{font-size:10px;color:#888;margin-bottom:20px}
+#pdf-div .pd-sec{font-size:12px;font-weight:700;color:#1a3a2e;margin:18px 0 6px;border-bottom:2px solid #c8a96e;padding-bottom:3px}
+#pdf-div .pd-q{font-size:10.5px;font-weight:700;margin:8px 0 3px}
+#pdf-div .pd-a{font-size:10px;padding-left:14px;color:#333}
+#pdf-div .pd-res{margin-top:22px;border-top:2px solid #1a3a2e;padding-top:16px}
+#pdf-div .pd-dim{margin-bottom:14px;padding:12px 16px;border:1px solid #d8d4c8;border-radius:6px}
+#pdf-div .pd-dn{font-size:11px;font-weight:700;color:#1a3a2e}
+#pdf-div .pd-dp{font-size:14px;font-weight:700;color:#c8a96e;margin:3px 0}
+#pdf-div .pd-dc{font-size:10px;color:#555;margin-top:4px}
+
+/* ── ALERT/CONSENT ───────────────────────────── */
+.consent-box{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:16px 18px;font-size:.82rem;color:var(--text-soft);line-height:1.65;margin-bottom:18px}
+.consent-check{display:flex;align-items:flex-start;gap:10px;margin-top:12px;font-size:.85rem;font-weight:500;color:var(--text);cursor:pointer}
+.consent-check input{margin-top:2px;flex-shrink:0;accent-color:var(--green)}
+
+/* ── RESPONSIVE ──────────────────────────────── */
+@media(max-width:600px){
+  .card{padding:20px 18px}
+  .header{padding:14px 18px}
+  .res-body{padding:20px 16px}
+  .input-row{grid-template-columns:1fr}
+  .adm-row label{min-width:160px}
+}
+
+/* ── CONDITIONAL BLOCKS ──────────────────────── */
+.cond-block{display:none}
+.cond-block.visible{display:block}
+.step{display:none}
+.step.active{display:block}
+
+</style>
+</head>
+<body>
+
+<div id="pdf-loading" style="display:none;position:fixed;inset:0;background:rgba(247,246,242,.97);z-index:99999;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-size:1rem;color:#1a3a2e;font-weight:600">
+  <div style="width:38px;height:38px;border:3px solid #d8d4c8;border-top-color:#1a3a2e;border-radius:50%;animation:spin .8s linear infinite"></div>
+  <span>Génération du document…</span>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div id="admin-overlay" style="display:none">
+  <div id="admin-panel">
+    <div id="admin-pw-wrap">
+      <h3>Espace Conseiller</h3>
+      <p style="font-size:.84rem;color:var(--text-muted);margin-bottom:12px">Accès réservé à Metentis Patrimoine. Saisissez le mot de passe pour modifier les paramètres de scoring.</p>
+      <input type="password" id="admin-pw-input" placeholder="Mot de passe conseiller…">
+      <div id="admin-pw-err">Mot de passe incorrect.</div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn-adm-save" onclick="checkAdminPw()">Accéder</button>
+        <button class="btn-adm-close" onclick="closeAdmin()">Annuler</button>
+      </div>
+    </div>
+    <div id="admin-content" style="display:none">
+      <h3>Paramètres de scoring</h3>
+      <p class="adm-sub">Modifiez les seuils et pondérations. Les modifications s'appliquent immédiatement à la session en cours.</p>
+
+      <div class="adm-section">
+        <h4>Seuils — Connaissance &amp; Expérience (score /100)</h4>
+        <div class="adm-row"><label>Score max Novice (0 → X)</label><input type="number" id="s_nov" value="35" min="1" max="99"> pts</div>
+        <div class="adm-row"><label>Score max Informé (X+1 → Y)</label><input type="number" id="s_inf" value="65" min="1" max="99"> pts</div>
+        <p style="font-size:.78rem;color:var(--text-muted)">Au-delà → Expérimenté</p>
+      </div>
+
+      <div class="adm-section">
+        <h4>Seuils — Profil de risque (score /100)</h4>
+        <div class="adm-row"><label>Score max Sécuritaire (0 → X)</label><input type="number" id="s_sec" value="15" min="1" max="99"> pts</div>
+        <div class="adm-row"><label>Score max Défensif (X+1 → Y)</label><input type="number" id="s_def" value="35" min="1" max="99"> pts</div>
+        <div class="adm-row"><label>Score max Équilibré (Y+1 → Z)</label><input type="number" id="s_eq" value="55" min="1" max="99"> pts</div>
+        <div class="adm-row"><label>Score max Dynamique (Z+1 → W)</label><input type="number" id="s_dyn" value="75" min="1" max="99"> pts</div>
+        <p style="font-size:.78rem;color:var(--text-muted)">Au-delà → Offensif</p>
+      </div>
+
+      <div class="adm-section">
+        <h4>Pondérations — Connaissance (total 100 pts)</h4>
+        <div class="adm-row"><label>Q1 – Produits détenus (max)</label><input type="number" id="w_q1" value="15"> pts</div>
+        <div class="adm-row"><label>Q2 – Mode de gestion (max)</label><input type="number" id="w_q2" value="10"> pts</div>
+        <div class="adm-row"><label>Q3 – Connaissance produits (max)</label><input type="number" id="w_q3" value="20"> pts</div>
+        <div class="adm-row"><label>Q4 – Instruments financiers (max)</label><input type="number" id="w_q4" value="35"> pts</div>
+        <div class="adm-row"><label>Q5 – Comportement après perte (max)</label><input type="number" id="w_q5k" value="10"> pts</div>
+        <div class="adm-row"><label>Revenus + Patrimoine (max)</label><input type="number" id="w_socio" value="10"> pts</div>
+      </div>
+
+      <div class="adm-section">
+        <h4>Pondérations — Profil risque (normalisé /100)</h4>
+        <div class="adm-row"><label>Q6 – Attitude générale risque</label><input type="number" id="w_q6" value="15"> pts</div>
+        <div class="adm-row"><label>Q7 – Choix placement A/B/C</label><input type="number" id="w_q7" value="10"> pts</div>
+        <div class="adm-row"><label>Q8 – Arbitrage revenu certain/risqué</label><input type="number" id="w_q8" value="15"> pts</div>
+        <div class="adm-row"><label>Q9 – Assurance biens</label><input type="number" id="w_q9" value="5"> pts</div>
+        <div class="adm-row"><label>Q10 – Train/avion</label><input type="number" id="w_q10" value="5"> pts</div>
+        <div class="adm-row"><label>Q11 – Propriété immobilière</label><input type="number" id="w_q11" value="5"> pts</div>
+        <div class="adm-row"><label>Q12 – Conseil carrière risquée</label><input type="number" id="w_q12" value="10"> pts</div>
+        <div class="adm-row"><label>Q5 – Comportement après perte (risque)</label><input type="number" id="w_q5r" value="15"> pts</div>
+        <div class="adm-row"><label>Q13 – Objectifs d'investissement</label><input type="number" id="w_q13" value="15"> pts</div>
+        <div class="adm-row"><label>Q14 – Horizon de placement</label><input type="number" id="w_q14" value="15"> pts</div>
+        <div class="adm-row"><label>Q15 – Pertes supportables</label><input type="number" id="w_q15" value="15"> pts</div>
+      </div>
+
+      <div class="adm-actions">
+        <button class="btn-adm-close" onclick="closeAdmin()">Fermer</button>
+        <button class="btn-adm-save" onclick="saveAdmin()">Enregistrer les paramètres</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="header">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52" height="48" style="flex-shrink:0;display:block">
+    <!-- Flèche Metentis : base horizontale + tige verticale + pointe -->
+    <rect x="0" y="34" width="32" height="5" fill="white"/>
+    <rect x="12" y="14" width="5" height="20" fill="white"/>
+    <polygon points="5,22 14.5,8 24,22" fill="white"/>
+    <!-- Texte Metentis -->
+    <text x="42" y="37" font-family="Arial,Helvetica,sans-serif" font-size="30" font-weight="700" fill="white" letter-spacing="-0.5">Metentis</text>
+  </svg>
+  <div class="header-divider"></div>
+  <div>
+    <div class="header-title">Questionnaire Profil Investisseur</div>
+    <div class="header-sub">Metentis Patrimoine · Conseil en Gestion de Patrimoine</div>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="prog-wrap" id="prog-wrap">
+  <div class="prog-bg"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="prog-row">
+    <span class="prog-lbl" id="prog-lbl">Étape 1 / 11</span>
+    <div class="prog-steps" id="prog-steps"></div>
+  </div>
+</div>
+
+<div id="alert-banner-top" style="display:none;position:sticky;top:0;z-index:100;background:#b33;color:#fff;text-align:center;padding:10px 20px;font-size:.88rem;font-weight:600">⚠ Veuillez compléter tous les champs obligatoires avant de continuer.</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 0 — IDENTIFICATION & AVERTISSEMENT
+═══════════════════════════════════════════ -->
+<div class="step active" id="s0">
+  <div class="card">
+    <div class="badge">Avertissement légal</div>
+    <div class="consent-box">
+      <p>Conformément aux principes de la loi du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés, nous vous rappelons que la présente collecte d'information ainsi que leur exploitation sont effectuées dans votre intérêt et ont pour finalité de permettre à votre conseiller de fournir un conseil adapté à votre situation patrimoniale.</p>
+      <p style="margin-top:10px">La qualité du conseil dépendra étroitement de la véracité, de l'exactitude et de l'exhaustivité de vos réponses. <strong>Si vous ne communiquez pas les informations requises, votre conseiller ne pourra pas formuler de recommandations personnalisées.</strong></p>
+      <p style="margin-top:10px">Les informations recueillies sont enregistrées par <strong>Thibaud Sarron – Metentis Patrimoine</strong>, 6 rue Pouchet 75017 Paris. Elles sont conservées pendant toute la durée de la relation contractuelle et 10 ans après son terme. Vous pouvez exercer vos droits (accès, rectification, opposition, portabilité) en contactant directement le cabinet ou la CNIL.</p>
+      <label class="consent-check">
+        <input type="checkbox" id="consent-cb"> J'ai lu et j'accepte les conditions de collecte et de traitement de mes données personnelles.
+      </label>
+    </div>
+    <div class="err" id="e-consent">Vous devez accepter les conditions pour continuer.</div>
+  </div>
+
+  <div class="card">
+    <div class="badge">Identification</div>
+    <h2 class="qt">Vos informations personnelles</h2>
+    <div class="input-row">
+      <div class="input-group">
+        <label class="input-label">Nom *</label>
+        <input type="text" class="txt-in" id="id-nom" placeholder="Nom de famille">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Prénom *</label>
+        <input type="text" class="txt-in" id="id-prenom" placeholder="Prénom">
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <label class="input-label">Date de naissance *</label>
+        <input type="date" class="txt-in" id="id-ddn">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Situation familiale</label>
+        <select class="txt-in" id="id-situation">
+          <option value="">Sélectionnez…</option>
+          <option>Célibataire</option>
+          <option>Marié(e)</option>
+          <option>Pacsé(e)</option>
+          <option>Divorcé(e)</option>
+          <option>Veuf(ve)</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <label class="input-label">Régime matrimonial</label>
+        <select class="txt-in" id="id-regime">
+          <option value="">Sélectionnez…</option>
+          <option>Communauté réduite aux acquêts</option>
+          <option>Séparation de biens</option>
+          <option>Communauté universelle</option>
+          <option>Participation aux acquêts</option>
+          <option>Non applicable</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Nombre d'enfants à charge</label>
+        <input type="number" class="txt-in" id="id-enfants" placeholder="0" min="0" max="20">
+      </div>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Profession / Catégorie socioprofessionnelle *</label>
+      <input type="text" class="txt-in" id="id-profession" placeholder="Ex. : Chirurgien libéral, Chef d'entreprise, Cadre supérieur…">
+    </div>
+    <div class="err" id="e-id">Veuillez renseigner les champs obligatoires (Nom, Prénom, Date de naissance, Profession).</div>
+  </div>
+
+  <div class="nav"><span></span>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="btn-admin" onclick="openAdmin()">⚙ Conseiller</button>
+      <button class="btn btn-next" onclick="nxt(0)">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 1 — SITUATION FINANCIÈRE
+═══════════════════════════════════════════ -->
+<div class="step" id="s1">
+  <div class="card">
+    <div class="badge">Situation financière</div>
+    <h2 class="qt">Votre situation financière globale</h2>
+    <div class="info-box">Ces informations nous permettent d'évaluer votre capacité à supporter des risques et à calibrer vos placements. Seules de grandes tranches vous sont demandées ici.</div>
+
+    <h3 class="st">Revenus annuels nets (foyer fiscal)</h3>
+    <ul class="opts">
+      <li><label><input type="radio" name="rev" value="0"><span>Moins de 30 000 €</span></label></li>
+      <li><label><input type="radio" name="rev" value="1"><span>30 000 € – 60 000 €</span></label></li>
+      <li><label><input type="radio" name="rev" value="2"><span>60 000 € – 100 000 €</span></label></li>
+      <li><label><input type="radio" name="rev" value="3"><span>100 000 € – 200 000 €</span></label></li>
+      <li><label><input type="radio" name="rev" value="4"><span>Plus de 200 000 €</span></label></li>
+    </ul>
+    <div class="err" id="e-rev">Veuillez sélectionner une tranche.</div>
+
+    <h3 class="st" style="margin-top:24px">Patrimoine global estimé</h3>
+    <ul class="opts">
+      <li><label><input type="radio" name="pat" value="0"><span>Moins de 100 000 €</span></label></li>
+      <li><label><input type="radio" name="pat" value="1"><span>100 000 € – 300 000 €</span></label></li>
+      <li><label><input type="radio" name="pat" value="2"><span>300 000 € – 750 000 €</span></label></li>
+      <li><label><input type="radio" name="pat" value="3"><span>750 000 € – 2 000 000 €</span></label></li>
+      <li><label><input type="radio" name="pat" value="4"><span>Plus de 2 000 000 €</span></label></li>
+    </ul>
+    <div class="err" id="e-pat">Veuillez sélectionner une tranche.</div>
+
+    <h3 class="st" style="margin-top:24px">Charges financières mensuelles estimées</h3>
+    <ul class="opts">
+      <li><label><input type="radio" name="charges" value="0"><span>Moins de 500 € / mois</span></label></li>
+      <li><label><input type="radio" name="charges" value="1"><span>500 € – 1 500 € / mois</span></label></li>
+      <li><label><input type="radio" name="charges" value="2"><span>1 500 € – 3 000 € / mois</span></label></li>
+      <li><label><input type="radio" name="charges" value="3"><span>Plus de 3 000 € / mois</span></label></li>
+    </ul>
+    <div class="err" id="e-charges">Veuillez sélectionner une tranche.</div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(1)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(1)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 2 — PRODUITS DÉTENUS (Q1-Q2)
+═══════════════════════════════════════════ -->
+<div class="step" id="s2">
+  <div class="card">
+    <div class="badge">Connaissance &amp; Expérience</div>
+    <h2 class="qt">Q1 — Parmi les produits suivants, cochez ceux que vous détenez ou avez détenus au cours des 12 derniers mois :</h2>
+    <ul class="opts">
+      <li><label><input type="checkbox" name="q1" value="livrets"><span>Comptes et livrets d'épargne (Livret A, LDDS, PEL, CEL…)</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="av"><span>Contrats d'assurance-vie ou de capitalisation</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="ct"><span>Comptes titres ordinaires / PEA</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="per"><span>Produits d'Épargne Retraite (PER, PERP, Madelin, Perco, Prefon…)</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="ee"><span>Produits d'Épargne Salariale (PEE, PEI, PERCO)</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="scpi"><span>SCPI / OPCI / Pierre-Papier</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="fcpi"><span>Capital investissement (FIP, FCPI, FCPR…)</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="structure"><span>Produits structurés / titres de créance structurés</span></label></li>
+      <li><label><input type="checkbox" name="q1" value="nr"><span>Je préfère ne pas répondre</span></label></li>
+    </ul>
+    <div class="err" id="e-q1">Veuillez faire au moins un choix.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q2 — À quels modes de gestion avez-vous eu recours ?</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q2" value="directe"><span>Gestion directe — vous gérez vous-même vos placements</span></label></li>
+      <li><label><input type="radio" name="q2" value="conseillee"><span>Gestion conseillée — vous êtes guidé par votre conseiller financier</span></label></li>
+      <li><label><input type="radio" name="q2" value="mandat"><span>Gestion sous mandat — votre gestion est déléguée à un professionnel</span></label></li>
+      <li><label><input type="radio" name="q2" value="nr"><span>Je préfère ne pas répondre</span></label></li>
+    </ul>
+    <div class="err" id="e-q2">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(2)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(2)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 3 — CONNAISSANCE PRODUITS (Q3)
+═══════════════════════════════════════════ -->
+<div class="step" id="s3">
+  <div class="card">
+    <div class="badge">Connaissance des produits</div>
+    <h2 class="qt">Q3 — Connaissez-vous ces familles de produits ?</h2>
+    <p class="qt-text">Pour chaque famille, sélectionnez l'affirmation qui vous semble correcte.</p>
+
+    <h3 class="st">Assurance-vie &amp; Capitalisation</h3>
+    <p class="qt-text">La clause bénéficiaire d'un contrat d'assurance-vie :</p>
+    <ul class="opts">
+      <li><label><input type="radio" name="q3_av1" value="A"><span>Permet de désigner les bénéficiaires du capital en cas de décès du souscripteur.</span></label></li>
+      <li><label><input type="radio" name="q3_av1" value="B"><span>Permet de définir les bénéficiaires en cas de rachat du contrat.</span></label></li>
+      <li><label><input type="radio" name="q3_av1" value="C"><span>Fixe les conditions que doivent remplir les héritiers légaux pour percevoir le capital.</span></label></li>
+      <li><label><input type="radio" name="q3_av1" value="D"><span>Je ne sais pas.</span></label></li>
+    </ul>
+    <div class="err" id="e-q3av1">Veuillez sélectionner une réponse.</div>
+
+    <p class="qt-text" style="margin-top:18px">Concernant les fonds en euros :</p>
+    <ul class="opts">
+      <li><label><input type="radio" name="q3_av2" value="A"><span>En cas de baisse des marchés financiers, votre investissement en fonds euros subira la même évolution.</span></label></li>
+      <li><label><input type="radio" name="q3_av2" value="B"><span>Les fonds en euros sont composés essentiellement d'obligations et garantissent le capital investi.</span></label></li>
+      <li><label><input type="radio" name="q3_av2" value="C"><span>À long terme, les fonds euros ont un rendement supérieur aux unités de compte actions.</span></label></li>
+      <li><label><input type="radio" name="q3_av2" value="D"><span>Je ne sais pas.</span></label></li>
+    </ul>
+    <div class="err" id="e-q3av2">Veuillez sélectionner une réponse.</div>
+
+    <h3 class="st">PEA &amp; Comptes-titres</h3>
+    <p class="qt-text">Concernant la fiscalité du PEA :</p>
+    <ul class="opts">
+      <li><label><input type="radio" name="q3_pea" value="A"><span>Sur un compte-titres, la vente d'une action suivie du rachat d'une autre n'entraîne pas d'imposition.</span></label></li>
+      <li><label><input type="radio" name="q3_pea" value="B"><span>Sur un PEA, les arbitrages internes ne génèrent pas d'imposition, et après 5 ans les gains sont exonérés d'impôt sur le revenu.</span></label></li>
+      <li><label><input type="radio" name="q3_pea" value="C"><span>Après 5 ans, les dividendes et plus-values du PEA sont totalement exonérés, y compris des prélèvements sociaux.</span></label></li>
+      <li><label><input type="radio" name="q3_pea" value="D"><span>Je ne sais pas.</span></label></li>
+    </ul>
+    <div class="err" id="e-q3pea">Veuillez sélectionner une réponse.</div>
+
+    <h3 class="st">Épargne Retraite (PER)</h3>
+    <p class="qt-text">Concernant le Plan d'Épargne Retraite (PER) :</p>
+    <ul class="opts">
+      <li><label><input type="radio" name="q3_per" value="A"><span>Les sommes versées sur un PER sont normalement bloquées jusqu'au départ à la retraite, sauf cas de déblocage anticipé.</span></label></li>
+      <li><label><input type="radio" name="q3_per" value="B"><span>Les sommes versées sur un PER peuvent être retirées à tout moment sans condition.</span></label></li>
+      <li><label><input type="radio" name="q3_per" value="C"><span>Le PER permet de recevoir un capital ou des revenus totalement exonérés d'impôt au départ en retraite.</span></label></li>
+      <li><label><input type="radio" name="q3_per" value="D"><span>Je ne sais pas.</span></label></li>
+    </ul>
+    <div class="err" id="e-q3per">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(3)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(3)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 4 — INSTRUMENTS FINANCIERS (Q4)
+═══════════════════════════════════════════ -->
+<div class="step" id="s4">
+  <div class="card">
+    <div class="badge">Instruments financiers</div>
+    <h2 class="qt">Q4 — Pour chaque instrument, sélectionnez l'affirmation correcte puis indiquez le nombre d'opérations réalisées au cours des 12 derniers mois.</h2>
+    <p class="qt-text">Les opérations visées incluent : versements, acquisitions, souscriptions, cessions, arbitrages réalisés sur compte-titres, PEA, assurance-vie, etc.</p>
+
+    <!-- Fonds euros -->
+    <div class="pblock">
+      <div class="pname">Fonds en euros</div>
+      <ul class="opts">
+        <li><label><input type="radio" name="q4fe_k" value="A"><span>En cas de baisse des marchés, votre investissement en fonds euros subira la même évolution.</span></label></li>
+        <li><label><input type="radio" name="q4fe_k" value="B"><span>Les fonds en euros sont composés essentiellement d'obligations et garantissent votre capital.</span></label></li>
+        <li><label><input type="radio" name="q4fe_k" value="C"><span>À long terme, les fonds euros surperforment les supports actions.</span></label></li>
+        <li><label><input type="radio" name="q4fe_k" value="D"><span>Je ne sais pas.</span></label></li>
+      </ul>
+      <div class="ops-lbl">Opérations réalisées au cours des 12 derniers mois :</div>
+      <div class="ops-row">
+        <label><input type="radio" name="q4fe_o" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="q4fe_o" value="1"><span>1 à 5</span></label>
+        <label><input type="radio" name="q4fe_o" value="2"><span>Plus de 5</span></label>
+      </div>
+      <div class="err" id="e-q4fe">Veuillez répondre aux deux parties.</div>
+    </div>
+
+    <!-- Monétaires -->
+    <div class="pblock">
+      <div class="pname">Produits monétaires (fonds monétaires, OPC monétaires)</div>
+      <ul class="opts">
+        <li><label><input type="radio" name="q4pm_k" value="A"><span>Les fonds monétaires sont composés principalement de TCN, bons du Trésor et obligations à court terme.</span></label></li>
+        <li><label><input type="radio" name="q4pm_k" value="B"><span>L'investissement en OPC monétaires est parfaitement adapté à un horizon de long terme.</span></label></li>
+        <li><label><input type="radio" name="q4pm_k" value="C"><span>En investissant en fonds monétaires, le capital est garanti sans exception.</span></label></li>
+        <li><label><input type="radio" name="q4pm_k" value="D"><span>Je ne sais pas.</span></label></li>
+      </ul>
+      <div class="ops-lbl">Opérations réalisées au cours des 12 derniers mois :</div>
+      <div class="ops-row">
+        <label><input type="radio" name="q4pm_o" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="q4pm_o" value="1"><span>1 à 5</span></label>
+        <label><input type="radio" name="q4pm_o" value="2"><span>Plus de 5</span></label>
+      </div>
+      <div class="err" id="e-q4pm">Veuillez répondre aux deux parties.</div>
+    </div>
+
+    <!-- Obligataires -->
+    <div class="pblock">
+      <div class="pname">Produits obligataires (obligations, fonds obligataires, OPC obligataires…)</div>
+      <ul class="opts">
+        <li><label><input type="radio" name="q4po_k" value="A"><span>Les obligations sont des dettes d'État ou d'entreprise pour lesquelles le défaut de remboursement est inexistant.</span></label></li>
+        <li><label><input type="radio" name="q4po_k" value="B"><span>La performance d'un fonds obligataire varie avec les évolutions des taux d'intérêt.</span></label></li>
+        <li><label><input type="radio" name="q4po_k" value="C"><span>Un taux d'intérêt élevé sur une obligation indique un risque faible.</span></label></li>
+        <li><label><input type="radio" name="q4po_k" value="D"><span>Je ne sais pas.</span></label></li>
+      </ul>
+      <div class="ops-lbl">Opérations réalisées au cours des 12 derniers mois :</div>
+      <div class="ops-row">
+        <label><input type="radio" name="q4po_o" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="q4po_o" value="1"><span>1 à 5</span></label>
+        <label><input type="radio" name="q4po_o" value="2"><span>Plus de 5</span></label>
+      </div>
+      <div class="err" id="e-q4po">Veuillez répondre aux deux parties.</div>
+    </div>
+
+    <!-- Actions -->
+    <div class="pblock">
+      <div class="pname">Produits actions (actions, fonds actions, OPC actions cotés…)</div>
+      <ul class="opts">
+        <li><label><input type="radio" name="q4pa_k" value="A"><span>Les actions sont adaptées à un investissement à court terme.</span></label></li>
+        <li><label><input type="radio" name="q4pa_k" value="B"><span>Les variations du cours d'une action dépendent de la santé financière de l'entreprise et de son environnement économique.</span></label></li>
+        <li><label><input type="radio" name="q4pa_k" value="C"><span>Les entreprises ont l'obligation légale de verser des dividendes à leurs actionnaires.</span></label></li>
+        <li><label><input type="radio" name="q4pa_k" value="D"><span>Je ne sais pas.</span></label></li>
+      </ul>
+      <div class="ops-lbl">Opérations réalisées au cours des 12 derniers mois :</div>
+      <div class="ops-row">
+        <label><input type="radio" name="q4pa_o" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="q4pa_o" value="1"><span>1 à 5</span></label>
+        <label><input type="radio" name="q4pa_o" value="2"><span>Plus de 5</span></label>
+      </div>
+      <div class="err" id="e-q4pa">Veuillez répondre aux deux parties.</div>
+    </div>
+
+    <!-- SCPI -->
+    <div class="pblock">
+      <div class="pname">SCPI &amp; OPCI</div>
+      <ul class="opts">
+        <li><label><input type="radio" name="q4sc_k" value="A"><span>Investir en SCPI permet de bénéficier d'une mutualisation du risque locatif par rapport à un investissement immobilier direct.</span></label></li>
+        <li><label><input type="radio" name="q4sc_k" value="B"><span>En cas de cession de parts SCPI, la société est tenue de les racheter dans un délai légal au cours actuel.</span></label></li>
+        <li><label><input type="radio" name="q4sc_k" value="C"><span>Un OPCI est aussi liquide qu'un fonds monétaire.</span></label></li>
+        <li><label><input type="radio" name="q4sc_k" value="D"><span>Je ne sais pas.</span></label></li>
+      </ul>
+      <div class="ops-lbl">Opérations réalisées au cours des 12 derniers mois :</div>
+      <div class="ops-row">
+        <label><input type="radio" name="q4sc_o" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="q4sc_o" value="1"><span>1 à 5</span></label>
+        <label><input type="radio" name="q4sc_o" value="2"><span>Plus de 5</span></label>
+      </div>
+      <div class="err" id="e-q4sc">Veuillez répondre aux deux parties.</div>
+    </div>
+
+    <!-- Capital investissement -->
+    <div class="pblock">
+      <div class="pname">Capital investissement (FIP, FCPI, FCPR…)</div>
+      <ul class="opts">
+        <li><label><input type="radio" name="q4ci_k" value="A"><span>Investir en FIP/FCPI est toujours un placement gagnant grâce à la réduction fiscale associée.</span></label></li>
+        <li><label><input type="radio" name="q4ci_k" value="B"><span>Les FIP/FCPI sont des placements risqués, à conserver généralement 6 à 10 ans, avec un risque élevé de perte en capital.</span></label></li>
+        <li><label><input type="radio" name="q4ci_k" value="C"><span>Les FCPI sont des placements totalement liquides disponibles à tout moment.</span></label></li>
+        <li><label><input type="radio" name="q4ci_k" value="D"><span>Je ne sais pas.</span></label></li>
+      </ul>
+      <div class="ops-lbl">Opérations réalisées au cours des 12 derniers mois :</div>
+      <div class="ops-row">
+        <label><input type="radio" name="q4ci_o" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="q4ci_o" value="1"><span>1 à 5</span></label>
+        <label><input type="radio" name="q4ci_o" value="2"><span>Plus de 5</span></label>
+      </div>
+      <div class="err" id="e-q4ci">Veuillez répondre aux deux parties.</div>
+    </div>
+
+    <!-- Produits structurés -->
+    <div class="pblock">
+      <div class="pname">Produits structurés / titres de créance structurés</div>
+      <ul class="opts">
+        <li><label><input type="radio" name="q4ps_k" value="A"><span>Un produit structuré offrant une garantie en capital au terme ne garantit pas le capital en cas de sortie anticipée.</span></label></li>
+        <li><label><input type="radio" name="q4ps_k" value="B"><span>Un produit structuré offre la même garantie en capital qu'un fonds en euros.</span></label></li>
+        <li><label><input type="radio" name="q4ps_k" value="C"><span>Les produits structurés ne comportent aucun risque de perte en capital.</span></label></li>
+        <li><label><input type="radio" name="q4ps_k" value="D"><span>Je ne sais pas.</span></label></li>
+      </ul>
+      <div class="ops-lbl">Opérations réalisées au cours des 12 derniers mois :</div>
+      <div class="ops-row">
+        <label><input type="radio" name="q4ps_o" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="q4ps_o" value="1"><span>1 à 5</span></label>
+        <label><input type="radio" name="q4ps_o" value="2"><span>Plus de 5</span></label>
+      </div>
+      <div class="err" id="e-q4ps">Veuillez répondre aux deux parties.</div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(4)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(4)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 5 — PERTES & ATTITUDE RISQUE (Q5-Q6)
+═══════════════════════════════════════════ -->
+<div class="step" id="s5">
+  <div class="card">
+    <div class="badge">Sensibilité au risque</div>
+    <h2 class="qt">Q5 — Avez-vous déjà subi des pertes sur vos placements financiers ?</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q5a" value="non"><span>Non, je n'ai jamais subi de pertes sur mes placements.</span></label></li>
+      <li><label><input type="radio" name="q5a" value="oui"><span>Oui, j'ai déjà subi des pertes sur mes placements.</span></label></li>
+    </ul>
+    <div class="err" id="e-q5a">Veuillez sélectionner une réponse.</div>
+
+    <div class="cond-block" id="q5b-block" style="margin-top:18px">
+      <p class="qt-text">Si oui, comment avez-vous réagi face à cette situation ?</p>
+      <ul class="opts">
+        <li><label><input type="radio" name="q5b" value="vendu"><span>J'ai tout vendu pour sécuriser ce qui restait.</span></label></li>
+        <li><label><input type="radio" name="q5b" value="patiente"><span>J'ai patienté en attendant la remontée des marchés.</span></label></li>
+        <li><label><input type="radio" name="q5b" value="reinvesti"><span>J'ai profité de la baisse pour réinvestir davantage.</span></label></li>
+      </ul>
+      <div class="err" id="e-q5b">Veuillez préciser votre réaction.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q6 — En matière de placements financiers, pensez-vous plutôt que :</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q6" value="0"><span>Il ne faut pas prendre de risque : on doit placer toutes ses économies dans des placements sûrs.</span></label></li>
+      <li><label><input type="radio" name="q6" value="1"><span>On peut placer une petite partie de ses économies sur des placements risqués.</span></label></li>
+      <li><label><input type="radio" name="q6" value="2"><span>On peut placer une part importante de ses économies sur des actifs risqués si le gain en vaut la peine.</span></label></li>
+      <li><label><input type="radio" name="q6" value="3"><span>On doit placer l'essentiel de ses économies dans des actifs risqués dès qu'il y a des chances de gains très importants.</span></label></li>
+    </ul>
+    <div class="err" id="e-q6">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(5)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(5)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 6 — SCÉNARIOS (Q7-Q8)
+═══════════════════════════════════════════ -->
+<div class="step" id="s6">
+  <div class="card">
+    <div class="badge">Scénarios de placement</div>
+    <h2 class="qt">Q7 — Quel placement seriez-vous le plus enclin à choisir ?</h2>
+    <div class="info-box">Ces trois placements ont des profils rendement/risque différents sur un horizon de 8 ans. Choisissez celui qui correspond le mieux à votre vision.</div>
+    <ul class="opts">
+      <li><label><input type="radio" name="q7" value="A"><span><strong>Placement A — Sécurité :</strong> Vous préservez votre capital avec une performance modeste mais certaine, supérieure aux livrets réglementés.</span></label></li>
+      <li><label><input type="radio" name="q7" value="B"><span><strong>Placement B — Équilibre :</strong> Vous limitez le risque mais acceptez des fluctuations légères à la baisse en cours de placement, pour espérer une meilleure performance.</span></label></li>
+      <li><label><input type="radio" name="q7" value="C"><span><strong>Placement C — Performance :</strong> Vous recherchez une performance élevée et acceptez des fluctuations importantes à la baisse durant la durée du placement.</span></label></li>
+    </ul>
+    <div class="err" id="e-q7">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q8 — Scénario d'arbitrage revenu certain / revenu incertain</h2>
+    <div class="info-box">Imaginez que toutes vos économies soient placées dans un support sans risque vous rapportant <strong>20 000 € par an</strong>. On vous propose de réallouer votre capital vers des supports risqués avec une chance sur deux de doubler ce revenu à <strong>40 000 €/an</strong> et une chance sur deux de le réduire d'un tiers à <strong>13 333 €/an</strong>.</div>
+    <ul class="opts">
+      <li><label><input type="radio" name="q8" value="accepte_1"><span>J'accepte ce placement — le gain potentiel vaut le risque.</span></label></li>
+      <li><label><input type="radio" name="q8" value="refuse_1"><span>Je refuse ce placement — je préfère mon revenu certain de 20 000 €.</span></label></li>
+    </ul>
+    <div class="err" id="e-q8a">Veuillez sélectionner une réponse.</div>
+
+    <!-- Branchement Q8b si accepte -->
+    <div class="cond-block" id="q8b-block" style="margin-top:20px">
+      <p class="qt-text"><strong>Ce placement n'est plus disponible.</strong> On vous propose à la place : une chance sur deux de <strong>40 000 €/an</strong>, une chance sur deux de <strong>10 000 €/an</strong> (réduction de 50%).</p>
+      <ul class="opts">
+        <li><label><input type="radio" name="q8b" value="accepte_2"><span>J'accepte cette nouvelle proposition.</span></label></li>
+        <li><label><input type="radio" name="q8b" value="refuse_2"><span>Je refuse cette proposition également.</span></label></li>
+      </ul>
+    </div>
+
+    <!-- Branchement Q8c si refuse -->
+    <div class="cond-block" id="q8c-block" style="margin-top:20px">
+      <p class="qt-text"><strong>Vous avez refusé le premier placement.</strong> On vous propose une version allégée : une chance sur deux de <strong>40 000 €/an</strong>, une chance sur deux de <strong>16 000 €/an</strong> (réduction de seulement 20%).</p>
+      <ul class="opts">
+        <li><label><input type="radio" name="q8c" value="accepte_3"><span>J'accepte cette proposition plus modérée.</span></label></li>
+        <li><label><input type="radio" name="q8c" value="refuse_3"><span>Je refuse également — je préfère la certitude.</span></label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(6)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(6)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 7 — COMPORTEMENTS (Q9-Q12)
+═══════════════════════════════════════════ -->
+<div class="step" id="s7">
+  <div class="card">
+    <div class="badge">Profil comportemental</div>
+    <h2 class="qt">Q9 — Assurance de vos biens</h2>
+    <p class="qt-text">Supposons que vous possédiez des biens d'une valeur totale de 200 000 €. Le risque de sinistre est évalué à 1 pour 1 000. On vous propose une assurance complète à 400 €/an. Compte tenu du prix de l'assurance et du risque, est-il opportun de la souscrire ?</p>
+    <ul class="opts">
+      <li><label><input type="radio" name="q9" value="oui"><span>Oui — je préfère payer la prime pour être totalement couvert.</span></label></li>
+      <li><label><input type="radio" name="q9" value="non"><span>Non — statistiquement la prime est trop élevée par rapport au risque réel.</span></label></li>
+    </ul>
+    <div class="err" id="e-q9">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q10 — Quand vous prenez le train ou l'avion, vous préférez arriver sur le lieu de départ :</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q10" value="avance"><span>Bien à l'avance — je n'aime pas courir.</span></label></li>
+      <li><label><input type="radio" name="q10" value="peu"><span>Un peu à l'avance — juste assez pour ne pas stresser.</span></label></li>
+      <li><label><input type="radio" name="q10" value="dernier"><span>Au dernier moment — je m'adapte à la situation.</span></label></li>
+    </ul>
+    <div class="err" id="e-q10">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q11 — En matière de logement, êtes-vous d'accord avec l'affirmation suivante : « L'un des premiers investissements à réaliser est de devenir propriétaire afin de s'assurer un toit au-dessus de la tête » ?</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q11" value="tout_a_fait"><span>Tout à fait d'accord.</span></label></li>
+      <li><label><input type="radio" name="q11" value="plutot"><span>Plutôt d'accord.</span></label></li>
+      <li><label><input type="radio" name="q11" value="pas"><span>Pas du tout d'accord.</span></label></li>
+    </ul>
+    <div class="err" id="e-q11">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q12 — Un de vos proches vous fait part de son intention d'abandonner sa situation actuelle pour une carrière risquée mais potentiellement très lucrative. Le poussez-vous dans cette voie ?</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q12" value="non"><span>Non, j'essaye de l'en dissuader — le risque est trop grand.</span></label></li>
+      <li><label><input type="radio" name="q12" value="reserve"><span>Oui, mais en émettant des réserves et des conseils de prudence.</span></label></li>
+      <li><label><input type="radio" name="q12" value="oui"><span>Oui, assurément — qui ne risque rien n'a rien.</span></label></li>
+    </ul>
+    <div class="err" id="e-q12">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(7)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(7)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 8 — OBJECTIFS & HORIZON (Q13-Q15)
+═══════════════════════════════════════════ -->
+<div class="step" id="s8">
+  <div class="card">
+    <div class="badge">Préférences de placement</div>
+    <h2 class="qt">Q13 — Parmi les objectifs d'investissement suivants, cochez ceux qui correspondent à votre situation :</h2>
+    <ul class="opts">
+      <li><label><input type="checkbox" name="q13" value="preservation"><span>Préservation du capital — sécuriser mon épargne avant tout.</span></label></li>
+      <li><label><input type="checkbox" name="q13" value="croissance"><span>Croissance du capital — valoriser mon patrimoine sur le long terme.</span></label></li>
+      <li><label><input type="checkbox" name="q13" value="revenus"><span>Génération de revenus réguliers.</span></label></li>
+      <li><label><input type="checkbox" name="q13" value="couverture"><span>Couverture et protection du patrimoine (ex. : succession, transmission).</span></label></li>
+      <li><label><input type="checkbox" name="q13" value="levier"><span>Exposition à effet de levier — optimiser le rendement avec des supports risqués.</span></label></li>
+    </ul>
+    <div class="err" id="e-q13">Veuillez faire au moins un choix.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q14 — Sur ce placement précis, quel est votre horizon d'investissement le plus long ?</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q14" value="0"><span>Très court terme — moins d'1 an</span></label></li>
+      <li><label><input type="radio" name="q14" value="1"><span>Court terme — 1 à 3 ans</span></label></li>
+      <li><label><input type="radio" name="q14" value="2"><span>Moyen terme — 3 à 5 ans</span></label></li>
+      <li><label><input type="radio" name="q14" value="3"><span>Long terme — 5 à 10 ans</span></label></li>
+      <li><label><input type="radio" name="q14" value="4"><span>Très long terme — plus de 10 ans</span></label></li>
+    </ul>
+    <div class="err" id="e-q14">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="card">
+    <h2 class="qt">Q15 — Compte tenu de vos revenus et de votre situation patrimoniale, quel niveau de pertes pouvez-vous supporter financièrement ?</h2>
+    <ul class="opts">
+      <li><label><input type="radio" name="q15" value="0"><span>Aucune perte — la protection de mon capital est impérative.</span></label></li>
+      <li><label><input type="radio" name="q15" value="1"><span>Des pertes financières limitées (inférieures à 10% du capital investi).</span></label></li>
+      <li><label><input type="radio" name="q15" value="2"><span>Des pertes significatives mais inférieures au capital investi.</span></label></li>
+      <li><label><input type="radio" name="q15" value="3"><span>Des pertes pouvant aller jusqu'au montant total du capital investi.</span></label></li>
+      <li><label><input type="radio" name="q15" value="4"><span>Des pertes pouvant dépasser le capital investi (effet de levier accepté).</span></label></li>
+    </ul>
+    <div class="err" id="e-q15">Veuillez sélectionner une réponse.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(8)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(8)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 9 — ESG (Q16-Q18)
+═══════════════════════════════════════════ -->
+<div class="step" id="s9">
+  <div class="card">
+    <div class="badge badge-esg">Préférences ESG</div>
+    <h2 class="qt">Q16 — Souhaitez-vous intégrer une dimension Environnement / Social / Gouvernance (ESG) dans votre politique d'investissement ?</h2>
+    <div class="info-box">Intégrer des critères ESG peut orienter vos placements vers des entreprises et projets respectueux de l'environnement et des normes sociales. Cela peut impliquer un univers d'investissement plus restreint.</div>
+    <ul class="opts">
+      <li><label><input type="radio" name="q16" value="total"><span>Oui — je souhaite que <strong>l'ensemble</strong> de mes investissements soient orientés vers des supports ESG.</span></label></li>
+      <li><label><input type="radio" name="q16" value="majoritaire"><span>Oui — je souhaite que mes investissements soient <strong>majoritairement</strong> orientés vers des supports ESG.</span></label></li>
+      <li><label><input type="radio" name="q16" value="partiel"><span>Oui — je souhaite intégrer une part de supports ESG, sans que ce soit majoritaire.</span></label></li>
+      <li><label><input type="radio" name="q16" value="non"><span>Non — je ne souhaite pas que les critères ESG soient pris en compte dans ma politique d'investissement.</span></label></li>
+    </ul>
+    <div class="err" id="e-q16">Veuillez sélectionner une réponse.</div>
+
+    <!-- Q17-Q18 conditionnels -->
+    <div class="cond-block" id="esg-detail-block">
+      <h3 class="st" style="margin-top:24px">Q17 — Quelle dimension ESG souhaitez-vous privilégier ?</h3>
+      <ul class="opts">
+        <li><label><input type="radio" name="q17" value="E"><span><strong>Environnement :</strong> réduction des émissions de CO₂, gestion des déchets, prévention des risques environnementaux.</span></label></li>
+        <li><label><input type="radio" name="q17" value="S"><span><strong>Social :</strong> prévention des accidents, formation du personnel, respect des droits des employés, chaîne de sous-traitance.</span></label></li>
+        <li><label><input type="radio" name="q17" value="G"><span><strong>Gouvernance :</strong> indépendance du conseil d'administration, transparence de la gestion, contrôle des comptes.</span></label></li>
+        <li><label><input type="radio" name="q17" value="tous"><span>Je ne souhaite pas privilégier un critère en particulier — approche globale ESG.</span></label></li>
+      </ul>
+      <div class="err" id="e-q17">Veuillez sélectionner une réponse.</div>
+
+      <h3 class="st" style="margin-top:22px">Q18 — Labellisation souhaitée selon la taxonomie SFDR (plusieurs choix possibles)</h3>
+      <ul class="opts">
+        <li><label><input type="checkbox" name="q18" value="art8"><span><strong>Fonds Article 8 :</strong> produits promouvant des caractéristiques environnementales et/ou sociales.</span></label></li>
+        <li><label><input type="checkbox" name="q18" value="art9"><span><strong>Fonds Article 9 :</strong> produits poursuivant un objectif d'investissement durable (plus exigeants que l'Article 8).</span></label></li>
+        <li><label><input type="checkbox" name="q18" value="isr"><span><strong>Label ISR :</strong> pour les placements immobiliers (SCPI, OPCI labellisés ISR).</span></label></li>
+        <li><label><input type="checkbox" name="q18" value="libre"><span>Je souhaite respecter mes critères ESG sans exiger un label ou une catégorie SFDR précise.</span></label></li>
+      </ul>
+      <div class="err" id="e-q18">Veuillez faire au moins un choix.</div>
+
+      <h3 class="st" style="margin-top:22px">Objectif de durabilité</h3>
+      <p class="qt-text">Quel pourcentage de votre investissement souhaitez-vous orienter vers des supports respectant vos objectifs ESG ?</p>
+      <div class="info-box" style="margin-bottom:12px">
+        <strong>Grille de référence Metentis :</strong><br>
+        Attentif : Niveau 1 (1-15%) · Niveau 2 (16-30%)<br>
+        Intéressé : Niveau 3 (31-45%) · Niveau 4 (46-50%)<br>
+        Impliqué : Niveau 5 (51-60%) · Niveau 6 (61-81%) · Niveau 7 (82-100%)
+      </div>
+      <div class="num-row" style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+        <label class="input-label" style="margin:0">Pourcentage souhaité :</label>
+        <input type="number" class="txt-in" id="esg-pct" min="1" max="100" placeholder="Ex. : 30" style="width:100px">
+        <span style="font-size:.88rem;color:var(--text-soft)">% — ou indiquer ici si pas d'objectif précis :</span>
+        <input type="text" class="txt-in" id="esg-libre" placeholder="Précisez…" style="width:220px">
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(9)">← Précédent</button>
+    <button class="btn btn-next" onclick="nxt(9)">Suivant →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉTAPE 10 — NIVEAU DE CONNAISSANCE SOUHAITÉ
+═══════════════════════════════════════════ -->
+<div class="step" id="s10">
+  <div class="card">
+    <div class="badge">Niveau souhaité</div>
+    <h2 class="qt">Niveau de connaissance et d'expérience souhaité</h2>
+    <p class="qt-text">Votre niveau de connaissance a été évalué automatiquement à partir de vos réponses. Si vous souhaitez déroger à ce niveau et choisir un niveau différent pour la gestion de votre portefeuille, vous pouvez le sélectionner ci-dessous.</p>
+    <div class="info-box">Par défaut, le niveau souhaité correspond à votre niveau évalué. La dérogation est de votre propre initiative et responsabilité.</div>
+
+    <ul class="opts">
+      <li><label><input type="radio" name="niveau_souhaite" value="auto"><span><strong>Appliquer le niveau évalué automatiquement</strong> (recommandé)</span></label></li>
+      <li><label><input type="radio" name="niveau_souhaite" value="novice"><span><strong>Novice</strong> — Produits simples uniquement, pas de produits complexes.</span></label></li>
+      <li><label><input type="radio" name="niveau_souhaite" value="informe"><span><strong>Informé</strong> — Produits simples et certains produits complexes.</span></label></li>
+      <li><label><input type="radio" name="niveau_souhaite" value="experimente"><span><strong>Expérimenté</strong> — Ensemble des produits financiers accessibles.</span></label></li>
+    </ul>
+    <div class="err" id="e-niveau">Veuillez sélectionner une option.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prv(10)">← Précédent</button>
+    <button class="btn btn-valider" onclick="valider()">Valider et obtenir mon profil</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE DE RÉSULTATS
+═══════════════════════════════════════════ -->
+<div id="res-page">
+  <div class="res-hdr">
+    <div class="res-hdr-txt">
+      <h2>Votre Profil Investisseur</h2>
+      <p id="res-date"></p>
+    </div>
+  </div>
+  <div class="res-body">
+    <div id="res-client-info" style="margin-bottom:20px;padding:14px 18px;background:var(--cream);border-radius:8px;font-size:.88rem;color:var(--text-soft)"></div>
+
+    <!-- Connaissance -->
+    <div class="dim">
+      <div class="dim-hdr">
+        <span class="dim-name">Niveau de connaissance &amp; expérience</span>
+        <span class="dim-badge" id="res-conn-badge">—</span>
+      </div>
+      <div class="profile-bar-wrap">
+        <div class="profile-grad grad-connaissance" style="background:linear-gradient(to right,#a8c4db,#5a8cb5,#1a3a2e)">
+          <div class="profile-marker" id="mark-conn">▼</div>
+        </div>
+        <div class="profile-levels">
+          <div class="profile-level" id="pl-nov" style="width:33.3%">Novice</div>
+          <div class="profile-level" id="pl-inf" style="width:33.3%">Informé</div>
+          <div class="profile-level" id="pl-exp" style="width:33.4%">Expérimenté</div>
+        </div>
+      </div>
+      <div class="dim-cmt" id="res-conn-cmt"></div>
+      <div class="dim-sc" id="res-conn-sc"></div>
+    </div>
+
+    <!-- Connaissance souhaitée -->
+    <div class="dim">
+      <div class="dim-hdr">
+        <span class="dim-name">Niveau de connaissance souhaité</span>
+        <span class="dim-badge dim-badge-gold" id="res-souhaite-badge">—</span>
+      </div>
+      <div class="dim-cmt" id="res-souhaite-cmt"></div>
+    </div>
+
+    <!-- Profil de risque -->
+    <div class="dim">
+      <div class="dim-hdr">
+        <span class="dim-name">Profil de risque</span>
+        <span class="dim-badge" id="res-risk-badge">—</span>
+      </div>
+      <div class="profile-bar-wrap">
+        <div class="profile-grad grad-risque">
+          <div class="profile-marker" id="mark-risk">▼</div>
+        </div>
+        <div class="profile-levels">
+          <div class="profile-level" id="pl-sec" style="width:20%">Sécuritaire</div>
+          <div class="profile-level" id="pl-def" style="width:20%">Défensif</div>
+          <div class="profile-level" id="pl-eq" style="width:20%">Équilibré</div>
+          <div class="profile-level" id="pl-dyn" style="width:20%">Dynamique</div>
+          <div class="profile-level" id="pl-off" style="width:20%">Offensif</div>
+        </div>
+      </div>
+      <div class="dim-cmt" id="res-risk-cmt"></div>
+      <div class="dim-sc" id="res-risk-sc"></div>
+    </div>
+
+    <!-- ESG -->
+    <div class="dim">
+      <div class="dim-hdr">
+        <span class="dim-name">Sensibilité ESG</span>
+        <span class="dim-badge" id="res-esg-badge">—</span>
+      </div>
+      <div class="dim-cmt" id="res-esg-cmt"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="res-acts">
+      <button class="btn btn-pdf" onclick="genPDF()">📄 Télécharger mon profil en PDF</button>
+    </div>
+
+    <!-- Récapitulatif réponses -->
+    <div id="answers-section" style="display:none">
+      <div class="pdf-sec">Récapitulatif de vos réponses</div>
+      <div id="answers-content"></div>
+    </div>
+    <button class="ans-toggle" onclick="toggleAnswers()">Afficher le détail des réponses</button>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+/* EmailJS init — après chargement du DOM et des scripts */
+try { if(typeof emailjs!=='undefined') emailjs.init('VOTRE_CLE_EMAILJS_ICI'); } catch(e){}
+
+
+/* ── CONFIG SCORING ── */
+let CFG = {
+  // Seuils connaissance
+  s_nov:35, s_inf:65,
+  // Seuils profil risque
+  s_sec:15, s_def:35, s_eq:55, s_dyn:75,
+  // Poids connaissance
+  w_q1:15, w_q2:10, w_q3:20, w_q4:35, w_q5k:10, w_socio:10,
+  // Poids risque
+  w_q6:15, w_q7:10, w_q8:15, w_q9:5, w_q10:5, w_q11:5,
+  w_q12:10, w_q5r:15, w_q13:15, w_q14:15, w_q15:15
+};
+
+/* ── PROGRESS ── */
+const TOTAL_STEPS = 11;
+let curStep = 0;
+function updateProgress(step){
+  const pct = Math.round((step/(TOTAL_STEPS-1))*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-lbl').textContent = 'Etape '+(step+1)+' / '+TOTAL_STEPS;
+  const ps = document.getElementById('prog-steps');
+  ps.innerHTML = '';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const d=document.createElement('div');
+    d.className='prog-dot'+(i<step?' done':i===step?' active':'');
+    ps.appendChild(d);
+  }
+}
+function showStep(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  curStep=n;
+  updateProgress(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function hideAlert(){ document.getElementById('alert-banner-top').style.display='none'; }
+function showAlert(){ document.getElementById('alert-banner-top').style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }
+function nxt(n){ hideAlert(); if(!validateStep(n)) return; if(n<TOTAL_STEPS-1) showStep(n+1); }
+function prv(n){ hideAlert(); if(n>0) showStep(n-1); }
+
+/* ── VALIDATION ── */
+function err(id,show){ const el=document.getElementById(id); if(el) el.style.display=show?'block':'none'; }
+function getRadio(name){ const el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:null; }
+function getChecked(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(e=>e.value); }
+
+function validateStep(n){
+  let ok=true;
+  if(n===0){
+    if(!document.getElementById('consent-cb').checked){err('e-consent',true);ok=false;}else err('e-consent',false);
+    const nom=document.getElementById('id-nom').value.trim();
+    const prenom=document.getElementById('id-prenom').value.trim();
+    const ddn=document.getElementById('id-ddn').value.trim();
+    const prof=document.getElementById('id-profession').value.trim();
+    if(!nom||!prenom||!ddn||!prof){err('e-id',true);ok=false;}else err('e-id',false);
+  }
+  if(n===1){
+    if(!getRadio('rev')){err('e-rev',true);ok=false;}else err('e-rev',false);
+    if(!getRadio('pat')){err('e-pat',true);ok=false;}else err('e-pat',false);
+    if(!getRadio('charges')){err('e-charges',true);ok=false;}else err('e-charges',false);
+  }
+  if(n===2){
+    if(!document.querySelectorAll('input[name="q1"]:checked').length){err('e-q1',true);ok=false;}else err('e-q1',false);
+    if(!getRadio('q2')){err('e-q2',true);ok=false;}else err('e-q2',false);
+  }
+  if(n===3){
+    ['q3_av1','q3_av2','q3_pea','q3_per'].forEach((q,i)=>{
+      if(!getRadio(q)){err(['e-q3av1','e-q3av2','e-q3pea','e-q3per'][i],true);ok=false;}
+      else err(['e-q3av1','e-q3av2','e-q3pea','e-q3per'][i],false);
+    });
+  }
+  if(n===4){
+    [['q4fe_k','q4fe_o','e-q4fe'],['q4pm_k','q4pm_o','e-q4pm'],['q4po_k','q4po_o','e-q4po'],
+     ['q4pa_k','q4pa_o','e-q4pa'],['q4sc_k','q4sc_o','e-q4sc'],['q4ci_k','q4ci_o','e-q4ci'],['q4ps_k','q4ps_o','e-q4ps']
+    ].forEach(([k,o,e])=>{ if(!getRadio(k)||!getRadio(o)){err(e,true);ok=false;}else err(e,false); });
+  }
+  if(n===5){
+    if(!getRadio('q5a')){err('e-q5a',true);ok=false;}else{
+      err('e-q5a',false);
+      if(getRadio('q5a')==='oui'&&!getRadio('q5b')){err('e-q5b',true);ok=false;}else err('e-q5b',false);
+    }
+    if(!getRadio('q6')){err('e-q6',true);ok=false;}else err('e-q6',false);
+  }
+  if(n===6){
+    if(!getRadio('q7')){err('e-q7',true);ok=false;}else err('e-q7',false);
+    if(!getRadio('q8')){err('e-q8a',true);ok=false;}else err('e-q8a',false);
+  }
+  if(n===7){
+    ['q9','q10','q11','q12'].forEach((q,i)=>{
+      if(!getRadio(q)){err(['e-q9','e-q10','e-q11','e-q12'][i],true);ok=false;}
+      else err(['e-q9','e-q10','e-q11','e-q12'][i],false);
+    });
+  }
+  if(n===8){
+    if(!document.querySelectorAll('input[name="q13"]:checked').length){err('e-q13',true);ok=false;}else err('e-q13',false);
+    if(!getRadio('q14')){err('e-q14',true);ok=false;}else err('e-q14',false);
+    if(!getRadio('q15')){err('e-q15',true);ok=false;}else err('e-q15',false);
+  }
+  if(n===9){
+    if(!getRadio('q16')){err('e-q16',true);ok=false;}else{
+      err('e-q16',false);
+      if(getRadio('q16')!=='non'){
+        if(!getRadio('q17')){err('e-q17',true);ok=false;}else err('e-q17',false);
+        if(!document.querySelectorAll('input[name="q18"]:checked').length){err('e-q18',true);ok=false;}else err('e-q18',false);
+      }
+    }
+  }
+  if(n===10){
+    if(!getRadio('niveau_souhaite')){err('e-niveau',true);ok=false;}else err('e-niveau',false);
+  }
+  if(!ok) showAlert();
+  return ok;
+}
+
+/* ── CONDITIONNELS ── */
+document.addEventListener('change',function(e){
+  if(e.target.name==='q5a'){
+    document.getElementById('q5b-block').classList.toggle('visible',e.target.value==='oui');
+  }
+  if(e.target.name==='q8'){
+    document.getElementById('q8b-block').classList.toggle('visible',e.target.value==='accepte_1');
+    document.getElementById('q8c-block').classList.toggle('visible',e.target.value==='refuse_1');
+  }
+  if(e.target.name==='q16'){
+    document.getElementById('esg-detail-block').classList.toggle('visible',e.target.value!=='non');
+  }
+});
+
+/* ── SCORING ── */
+function scoreConnaissance(){
+  let s=0;
+
+  // Q1 — produits détenus
+  const q1=getChecked('q1');
+  let q1s=0;
+  if(q1.includes('livrets')||q1.includes('av')) q1s+=3;
+  if(q1.includes('ct')||q1.includes('per')||q1.includes('ee')) q1s+=5;
+  if(q1.includes('scpi')||q1.includes('fcpi')||q1.includes('structure')) q1s+=7;
+  s += Math.min(q1s, CFG.w_q1);
+
+  // Q2 — mode de gestion
+  const q2=getRadio('q2');
+  const q2m={directe:CFG.w_q2, conseillee:Math.round(CFG.w_q2*0.7), mandat:Math.round(CFG.w_q2*0.5), nr:0};
+  s += q2m[q2]||0;
+
+  // Q3 — connaissance produits (6 bonnes réponses max, correctes = A,B,B,A)
+  const q3cor={q3_av1:'A',q3_av2:'B',q3_pea:'B',q3_per:'A'};
+  let q3s=0;
+  Object.entries(q3cor).forEach(([q,ans])=>{ if(getRadio(q)===ans) q3s++; });
+  s += Math.round((q3s/4)*CFG.w_q3);
+
+  // Q4 — instruments (7 produits, bonne réponse + opérations)
+  const q4=[ ['q4fe_k','B','q4fe_o'], ['q4pm_k','A','q4pm_o'], ['q4po_k','B','q4po_o'],
+              ['q4pa_k','B','q4pa_o'], ['q4sc_k','A','q4sc_o'], ['q4ci_k','B','q4ci_o'], ['q4ps_k','A','q4ps_o'] ];
+  let q4s=0;
+  const perProd = CFG.w_q4/q4.length;
+  q4.forEach(([k,ans,o])=>{
+    let ps=0;
+    if(getRadio(k)===ans) ps+=perProd*0.6;
+    const ov=parseInt(getRadio(o)||0);
+    ps+=ov>0?ov===1?perProd*0.25:perProd*0.4:0;
+    q4s+=ps;
+  });
+  s += Math.min(Math.round(q4s), CFG.w_q4);
+
+  // Q5 — comportement après perte (pour connaissance)
+  const q5b=getRadio('q5b');
+  const q5km={vendu:2,patiente:Math.round(CFG.w_q5k*0.7),reinvesti:CFG.w_q5k};
+  if(getRadio('q5a')==='oui') s+=q5km[q5b]||0;
+  else s+=Math.round(CFG.w_q5k*0.5);
+
+  // Socio (revenus + patrimoine)
+  const rev=parseInt(getRadio('rev')||0);
+  const pat=parseInt(getRadio('pat')||0);
+  const socio=Math.round(((rev+pat)/8)*CFG.w_socio);
+  s+=Math.min(socio,CFG.w_socio);
+
+  return Math.min(Math.round(s),100);
+}
+function scoreRisque(){
+  let raw=0;
+
+  // Q6
+  const q6m={'0':0,'1':Math.round(CFG.w_q6*0.33),'2':Math.round(CFG.w_q6*0.8),'3':CFG.w_q6};
+  raw+=q6m[getRadio('q6')]||0;
+
+  // Q7
+  const q7m={A:2,B:Math.round(CFG.w_q7*0.6),C:CFG.w_q7};
+  raw+=q7m[getRadio('q7')]||0;
+
+  // Q8 — séquence
+  let q8s=0;
+  const q8v=getRadio('q8');
+  if(q8v==='accepte_1'){
+    const q8bv=getRadio('q8b');
+    q8s=q8bv==='accepte_2'?CFG.w_q8:Math.round(CFG.w_q8*0.75);
+  } else {
+    const q8cv=getRadio('q8c');
+    q8s=q8cv==='accepte_3'?Math.round(CFG.w_q8*0.4):Math.round(CFG.w_q8*0.1);
+  }
+  raw+=q8s;
+
+  // Q9 — aversion au risque (non=moins averse=plus de score)
+  raw+=getRadio('q9')==='non'?CFG.w_q9:Math.round(CFG.w_q9*0.3);
+
+  // Q10
+  const q10m={avance:1,peu:Math.round(CFG.w_q10*0.6),dernier:CFG.w_q10};
+  raw+=q10m[getRadio('q10')]||0;
+
+  // Q11
+  const q11m={tout_a_fait:1,plutot:Math.round(CFG.w_q11*0.6),pas:CFG.w_q11};
+  raw+=q11m[getRadio('q11')]||0;
+
+  // Q12
+  const q12m={non:1,reserve:Math.round(CFG.w_q12*0.5),oui:CFG.w_q12};
+  raw+=q12m[getRadio('q12')]||0;
+
+  // Q5 — comportement après perte (pour risque)
+  const q5bm={vendu:1,patiente:Math.round(CFG.w_q5r*0.6),reinvesti:CFG.w_q5r};
+  if(getRadio('q5a')==='oui') raw+=q5bm[getRadio('q5b')]||0;
+  else raw+=Math.round(CFG.w_q5r*0.4);
+
+  // Q13 — objectifs
+  const q13=getChecked('q13');
+  let q13s=1;
+  if(q13.includes('croissance')) q13s=Math.round(CFG.w_q13*0.5);
+  if(q13.includes('revenus')&&q13.includes('croissance')) q13s=Math.round(CFG.w_q13*0.65);
+  if(q13.includes('levier')) q13s=CFG.w_q13;
+  if(q13.length===1&&q13.includes('preservation')) q13s=1;
+  raw+=q13s;
+
+  // Q14 — horizon
+  const q14m={'0':2,'1':Math.round(CFG.w_q14*0.33),'2':Math.round(CFG.w_q14*0.67),'3':Math.round(CFG.w_q14*0.87),'4':CFG.w_q14};
+  raw+=q14m[getRadio('q14')]||0;
+
+  // Q15 — pertes
+  const q15m={'0':0,'1':Math.round(CFG.w_q15*0.27),'2':Math.round(CFG.w_q15*0.53),'3':Math.round(CFG.w_q15*0.8),'4':CFG.w_q15};
+  raw+=q15m[getRadio('q15')]||0;
+
+  // Normaliser sur 100
+  const maxRaw=CFG.w_q6+CFG.w_q7+CFG.w_q8+CFG.w_q9+CFG.w_q10+CFG.w_q11+CFG.w_q12+CFG.w_q5r+CFG.w_q13+CFG.w_q14+CFG.w_q15;
+  return Math.min(Math.round((raw/maxRaw)*100),100);
+}
+
+
+/* ── LABELS & COMMENTAIRES ── */
+const CONN_CMT={
+  Novice:'Comme beaucoup d\'épargnants, vous connaissez essentiellement les produits les plus simples. Vous êtes moins à l\'aise avec le fonctionnement des marchés financiers.',
+  Informé:'Vous êtes plutôt à l\'aise avec les produits les plus simples et connaissez certains produits financiers plus complexes sans toutefois en maîtriser précisément tous leurs mécanismes.',
+  Expérimenté:'Vous êtes à l\'aise avec la finance sans toutefois être un professionnel. Vous comprenez le fonctionnement des marchés financiers et êtes capable d\'en mesurer les risques. Certains produits complexes vous sont cependant inconnus.'
+};
+const RISK_CMT={
+  Sécuritaire:'Vous ne souhaitez pas prendre de risques dans vos placements afin de réaliser vos projets en toute sécurité. La protection de votre capital doit être assurée quel que soit votre horizon de placement.',
+  Défensif:'Vous souhaitez prendre le minimum de risques dans vos placements afin de réaliser vos projets en toute sécurité. Votre faible tolérance au risque impose la sélection de supports à faible volatilité.',
+  Équilibré:'D\'après vos réponses, vous souhaitez maîtriser le degré de risque de vos placements tout en acceptant des fluctuations de la valeur de votre capital pour en améliorer les performances.',
+  Dynamique:'Vous êtes prêt à vous positionner en partie sur des marchés volatiles en contrepartie d\'une espérance de gain élevé. De ce fait, vous êtes prêt à accepter d\'importantes fluctuations de la valeur de votre capital dans le temps.',
+  Offensif:'Vous privilégiez avant tout la performance, au risque de vous exposer à d\'importantes pertes en capital.'
+};
+
+
+function getConnLabel(sc){
+  if(sc<=CFG.s_nov) return 'Novice';
+  if(sc<=CFG.s_inf) return 'Informé';
+  return 'Expérimenté';
+}
+function getRiskLabel(sc){
+  if(sc<=CFG.s_sec) return 'Sécuritaire';
+  if(sc<=CFG.s_def) return 'Défensif';
+  if(sc<=CFG.s_eq)  return 'Équilibré';
+  if(sc<=CFG.s_dyn) return 'Dynamique';
+  return 'Offensif';
+}
+
+/* ── VALIDER ── */
+function valider(){
+  hideAlert();
+  if(!validateStep(10)) return;
+
+  const scConn=scoreConnaissance();
+  const scRisk=scoreRisque();
+  const connLabel=getConnLabel(scConn);
+  const riskLabel=getRiskLabel(scRisk);
+
+  // Niveau souhaité
+  let niveauSouhaite=getRadio('niveau_souhaite');
+  if(niveauSouhaite==='auto') niveauSouhaite=connLabel;
+  else niveauSouhaite={novice:'Novice',informe:'Informé',experimente:'Expérimenté'}[niveauSouhaite];
+
+  // ESG
+  const q16=getRadio('q16');
+  const esgOui=q16!=='non';
+  let esgLabel='Non sensible ESG';
+  let esgCmt='Le client ne souhaite pas que les critères ESG soient pris en compte dans sa politique d\'investissement.';
+  if(esgOui){
+    const pct=document.getElementById('esg-pct').value;
+    const libre=document.getElementById('esg-libre').value;
+    const lvl=q16==='total'?'Impliqué (100%)':q16==='majoritaire'?'Intéressé (>50%)':'Attentif (<50%)';
+    esgLabel=lvl;
+    esgCmt='Le client est prêt à accepter des performances potentiellement moindres en contrepartie d\'investissements ESG. ';
+    if(pct) esgCmt+='Objectif ESG : '+pct+'%.';
+    if(libre) esgCmt+=' Précision : '+libre+'.';
+    const q17=getRadio('q17');
+    if(q17&&q17!=='tous') esgCmt+=' Dimension privilégiée : '+{E:'Environnement',S:'Social',G:'Gouvernance'}[q17]+'.';
+  }
+
+  // Afficher résultats
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('res-page').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const now=new Date();
+  document.getElementById('res-date').textContent='Questionnaire complété le '+now.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+
+  const nom=document.getElementById('id-nom').value+' '+document.getElementById('id-prenom').value;
+  document.getElementById('res-client-info').innerHTML=
+    '<strong>Client :</strong> '+nom+' &nbsp;|&nbsp; <strong>Date de naissance :</strong> '+
+    (document.getElementById('id-ddn').value||'—')+' &nbsp;|&nbsp; <strong>Profession :</strong> '+
+    (document.getElementById('id-profession').value||'—');
+
+  // Connaissance
+  document.getElementById('res-conn-badge').textContent=connLabel;
+  document.getElementById('res-conn-cmt').textContent=CONN_CMT[connLabel];
+  document.getElementById('res-conn-sc').textContent='Score de connaissance : '+scConn+' / 100';
+  setMarker('mark-conn',connLabel==='Novice'?16.6:connLabel==='Informé'?50:83.3);
+  ['pl-nov','pl-inf','pl-exp'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(connLabel==='Novice'?'pl-nov':connLabel==='Informé'?'pl-inf':'pl-exp').classList.add('active');
+
+  // Souhaité
+  document.getElementById('res-souhaite-badge').textContent=niveauSouhaite;
+  document.getElementById('res-souhaite-cmt').textContent=niveauSouhaite===connLabel?
+    'Le niveau souhaité correspond au niveau évalué automatiquement.':
+    'Le client a choisi de déroger à son niveau évalué ('+connLabel+'). Niveau souhaité retenu : '+niveauSouhaite+'.';
+
+  // Profil risque
+  document.getElementById('res-risk-badge').textContent=riskLabel;
+  document.getElementById('res-risk-cmt').textContent=RISK_CMT[riskLabel];
+  document.getElementById('res-risk-sc').textContent='Score de risque : '+scRisk+' / 100';
+  const riskPct={Sécuritaire:10,Défensif:30,Équilibré:50,Dynamique:70,Offensif:90};
+  setMarker('mark-risk',riskPct[riskLabel]);
+  ['pl-sec','pl-def','pl-eq','pl-dyn','pl-off'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  const riskIds={Sécuritaire:'pl-sec',Défensif:'pl-def',Équilibré:'pl-eq',Dynamique:'pl-dyn',Offensif:'pl-off'};
+  document.getElementById(riskIds[riskLabel]).classList.add('active');
+
+  // ESG
+  document.getElementById('res-esg-badge').textContent=esgLabel;
+  document.getElementById('res-esg-cmt').textContent=esgCmt;
+
+  // Build answers content
+  buildAnswers();
+
+  // Store for PDF/email
+  window._profil = {scConn,scRisk,connLabel,niveauSouhaite,riskLabel,esgLabel,esgCmt,nom,now};
+
+  // Envoi automatique par email au conseiller (silencieux pour le client)
+  setTimeout(sendEmailAuto, 1500);
+}
+function setMarker(id,pct){
+  setTimeout(()=>{ document.getElementById(id).style.left=pct+'%'; },300);
+}
+function buildAnswers(){
+  const c=document.getElementById('answers-content');
+  let h='';
+  const nom=document.getElementById('id-nom').value+' '+document.getElementById('id-prenom').value;
+  h+=`<div class="pdf-sec">Informations personnelles</div>`;
+  h+=`<div class="pdf-q">Identité</div><div class="pdf-opts"><div class="ans-sel">${nom} — né(e) le ${document.getElementById('id-ddn').value||'—'}</div></div>`;
+  h+=`<div class="pdf-q">Profession</div><div class="pdf-opts"><div class="ans-sel">${document.getElementById('id-profession').value||'—'}</div></div>`;
+  h+=`<div class="pdf-q">Situation familiale</div><div class="pdf-opts"><div class="ans-sel">${document.getElementById('id-situation').value||'—'}</div></div>`;
+  h+=`<div class="pdf-q">Régime matrimonial</div><div class="pdf-opts"><div class="ans-sel">${document.getElementById('id-regime').value||'—'}</div></div>`;
+
+  h+=`<div class="pdf-sec">Situation financière</div>`;
+  const revLbls=['< 30 000 €','30 000 – 60 000 €','60 000 – 100 000 €','100 000 – 200 000 €','> 200 000 €'];
+  const patLbls=['< 100 000 €','100 000 – 300 000 €','300 000 – 750 000 €','750 000 – 2 000 000 €','> 2 000 000 €'];
+  const chgLbls=['< 500 €/mois','500 – 1 500 €/mois','1 500 – 3 000 €/mois','> 3 000 €/mois'];
+  h+=`<div class="pdf-q">Revenus annuels nets</div><div class="pdf-opts"><div class="ans-sel">${revLbls[getRadio('rev')]||'—'}</div></div>`;
+  h+=`<div class="pdf-q">Patrimoine global</div><div class="pdf-opts"><div class="ans-sel">${patLbls[getRadio('pat')]||'—'}</div></div>`;
+  h+=`<div class="pdf-q">Charges mensuelles</div><div class="pdf-opts"><div class="ans-sel">${chgLbls[getRadio('charges')]||'—'}</div></div>`;
+
+  c.innerHTML=h;
+}
+function toggleAnswers(){
+  const s=document.getElementById('answers-section');
+  const btn=document.querySelector('.ans-toggle');
+  s.style.display=s.style.display==='none'?'block':'none';
+  btn.textContent=s.style.display==='none'?'Afficher le détail des réponses':'Masquer le détail des réponses';
+}
+
+
+/* ── PDF (jsPDF pur) ── */
+/* ═══════════════════════════════════════════════════════
+   PDF — jsPDF pur, zéro html2canvas, zéro page blanche
+═══════════════════════════════════════════════════════ */
+
+function v(id){ var e=document.getElementById(id); return e?e.value.trim():'—'; }
+function r(name){ var e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:null; }
+function rl(name){
+  var e=document.querySelector('input[name="'+name+'"]:checked');
+  if(!e) return '—';
+  var lbl=e.closest('label');
+  if(!lbl) return e.value;
+  return lbl.innerText.replace(/^\s+/,'').split('\n')[0].trim();
+}
+function cl(name){
+  var els=document.querySelectorAll('input[name="'+name+'"]:checked');
+  if(!els.length) return '—';
+  return Array.from(els).map(function(e){
+    var l=e.closest('label'); return l?l.innerText.replace(/^\s+/,'').split('\n')[0].trim():e.value;
+  }).join(', ');
+}
+function prodKnow(kname,oname){
+  var ops={'0':'Aucune','1':'1 à 5','2':'Plus de 5'};
+  return rl(kname)+' | Opérations 12 mois : '+(ops[r(oname)]||'—');
+}
+function pdfFilename(){
+  var nom=(document.getElementById('id-nom').value||'client').replace(/\s+/g,'-');
+  var now=new Date();
+  return 'Profil-Investisseur-'+nom+'-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'.pdf';
+}
+function buildPDF(){
+  var p=window._profil;
+  var JsPDF=window.jspdf?window.jspdf.jsPDF:window.jsPDF;
+  var doc=new JsPDF({orientation:'p',unit:'mm',format:'a4'});
+  var W=210,M=14,cw=W-M*2,y=M;
+  var GREEN=[26,58,46],GOLD=[200,169,110],GREY=[90,90,90],BLACK=[30,30,30];
+  function np(n){ if(y+n>285){doc.addPage();y=M;} }
+  function sc(rgb){doc.setTextColor(rgb[0],rgb[1],rgb[2]);}
+  function sec(t){
+    np(12);
+    doc.setFillColor(26,58,46);doc.rect(M,y,cw,7,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(255,255,255);
+    doc.text(t,M+3,y+5);doc.setTextColor(0,0,0);y+=10;
+  }
+  function qr(q,a){
+    np(14);
+    doc.setFont('helvetica','bold');doc.setFontSize(7.5);sc(GREY);
+    doc.text(q,M,y);y+=4;
+    doc.setFont('helvetica','normal');doc.setFontSize(8.5);sc(BLACK);
+    var ls=doc.splitTextToSize(String(a||'—'),cw-4);
+    doc.text(ls,M+4,y);y+=ls.length*4+2;
+  }
+  function box(label,val,cmt,x,bw){
+    doc.setDrawColor(200,169,110);doc.setLineWidth(0.5);doc.rect(x,y,bw,26);
+    doc.setFont('helvetica','bold');doc.setFontSize(6.5);sc(GREY);
+    doc.text(label.toUpperCase(),x+3,y+5);
+    doc.setFont('helvetica','bold');doc.setFontSize(12);sc(GREEN);
+    doc.text(String(val),x+3,y+13);
+    if(cmt){doc.setFont('helvetica','normal');doc.setFontSize(6.5);sc(GREY);
+      var cm=doc.splitTextToSize(String(cmt),bw-6);
+      cm.slice(0,3).forEach(function(l,i){doc.text(l,x+3,y+18+i*3);});}
+  }
+  /* ENTÊTE */
+  doc.setFillColor(26,58,46);doc.rect(0,0,W,20,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(200,169,110);
+  doc.text('↑  Metentis Patrimoine',M,13);
+  doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(210,210,190);
+  doc.text('Questionnaire Profil Investisseur',M+62,13);
+  doc.setFontSize(7);doc.setTextColor(180,180,160);
+  doc.text(p.now.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}),W-M,13,{align:'right'});
+  y=26;
+  /* CLIENT */
+  doc.setFillColor(240,244,240);doc.rect(M,y,cw,18,'F');
+  doc.setFillColor(26,58,46);doc.rect(M,y,1.5,18,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(9.5);sc(GREEN);
+  doc.text('Client : '+p.nom,M+4,y+6);
+  doc.setFont('helvetica','normal');doc.setFontSize(8);sc(GREY);
+  doc.text('Né(e) le : '+v('id-ddn')+'   |   Profession : '+v('id-profession')+'   |   Situation : '+v('id-situation'),M+4,y+12);
+  doc.text('Régime : '+v('id-regime')+'   |   Enfants : '+(v('id-enfants')||'0'),M+4,y+17);
+  y+=23;
+  /* CONCLUSIONS */
+  sec('CONCLUSIONS — PROFIL INVESTISSEUR');
+  var hw=(cw-3)/2;
+  var CC={'Novice':'Produits simples uniquement.','Informé':'Connaissance partielle des produits complexes.','Expérimenté':'Comprend les marchés, mesure les risques.'};
+  var RC={'Sécuritaire':'Protection du capital impérative.','Défensif':'Supports à faible volatilité uniquement.','Équilibré':'Fluctuations limitées acceptées.','Dynamique':'Importantes fluctuations acceptées.','Offensif':'Performance maximale, pertes acceptées.'};
+  box('Connaissance & Expérience',p.connLabel,(CC[p.connLabel]||'')+' Score: '+p.scConn+'/100',M,hw);
+  box('Niveau souhaité',p.niveauSouhaite,p.niveauSouhaite===p.connLabel?'Niveau évalué confirmé':'Dérogation client',M+hw+3,hw);
+  y+=28;np(28);
+  box('Profil de Risque',p.riskLabel,(RC[p.riskLabel]||'')+' Score: '+p.scRisk+'/100',M,hw);
+  box('Sensibilité ESG',p.esgLabel,p.esgCmt.slice(0,100),M+hw+3,hw);
+  y+=30;
+  /* SITUATION FINANCIERE */
+  sec('1 — SITUATION FINANCIÈRE');
+  var rL=['< 30K€','30–60K€','60–100K€','100–200K€','> 200K€'];
+  var pL=['< 100K€','100–300K€','300K–750K€','750K–2M€','> 2M€'];
+  var cL=['< 500€/mois','500–1500€/mois','1500–3000€/mois','> 3000€/mois'];
+  qr('Revenus annuels nets',rL[r('rev')]||'—');
+  qr('Patrimoine global estimé',pL[r('pat')]||'—');
+  qr('Charges financières mensuelles',cL[r('charges')]||'—');
+  /* Q1-Q2 */
+  sec('2 — CONNAISSANCE & EXPÉRIENCE (Q1-Q2)');
+  qr('Q1 – Produits détenus ces 12 derniers mois',cl('q1'));
+  qr('Q2 – Mode de gestion',rl('q2'));
+  /* Q3 */
+  sec('3 — CONNAISSANCE DES PRODUITS (Q3)');
+  qr('Assurance-vie — clause bénéficiaire',rl('q3_av1'));
+  qr('Fonds en euros',rl('q3_av2'));
+  qr('PEA — fiscalité',rl('q3_pea'));
+  qr('Plan d\'Épargne Retraite (PER)',rl('q3_per'));
+  /* Q4 */
+  sec('4 — INSTRUMENTS FINANCIERS (Q4)');
+  qr('Fonds en euros',prodKnow('q4fe_k','q4fe_o'));
+  qr('Produits monétaires',prodKnow('q4pm_k','q4pm_o'));
+  qr('Produits obligataires',prodKnow('q4po_k','q4po_o'));
+  qr('Produits actions',prodKnow('q4pa_k','q4pa_o'));
+  qr('SCPI / OPCI',prodKnow('q4sc_k','q4sc_o'));
+  qr('Capital investissement (FIP, FCPI…)',prodKnow('q4ci_k','q4ci_o'));
+  qr('Produits structurés',prodKnow('q4ps_k','q4ps_o'));
+  /* Q5-Q12 */
+  sec('5 — SENSIBILITÉ AU RISQUE (Q5-Q12)');
+  qr('Q5 – Pertes subies / réaction',r('q5a')==='oui'?'Oui — '+rl('q5b'):'Non');
+  qr('Q6 – Attitude générale',rl('q6'));
+  qr('Q7 – Choix de placement A/B/C',rl('q7'));
+  var q8r=rl('q8');
+  if(r('q8')==='accepte_1')q8r+=' → '+rl('q8b');
+  if(r('q8')==='refuse_1')q8r+=' → '+rl('q8c');
+  qr('Q8 – Arbitrage revenu certain/incertain',q8r);
+  qr('Q9 – Assurance de biens',rl('q9'));
+  qr('Q10 – Comportement face à l\'incertitude',rl('q10'));
+  qr('Q11 – Rapport à la propriété immobilière',rl('q11'));
+  qr('Q12 – Conseil face à une carrière risquée',rl('q12'));
+  /* Q13-Q15 */
+  sec('6 — OBJECTIFS & HORIZON DE PLACEMENT (Q13-Q15)');
+  qr('Q13 – Objectifs d\'investissement',cl('q13'));
+  qr('Q14 – Horizon de placement',rl('q14'));
+  qr('Q15 – Pertes financières supportables',rl('q15'));
+  /* ESG */
+  sec('7 — PRÉFÉRENCES ESG (Q16-Q18)');
+  qr('Q16 – Intégration des critères ESG',rl('q16'));
+  if(r('q16')!=='non'){
+    qr('Q17 – Dimension ESG privilégiée',rl('q17'));
+    qr('Q18 – Labellisation souhaitée (SFDR)',cl('q18'));
+    var ep=v('esg-pct'),el2=v('esg-libre');
+    if(ep&&ep!=='—')qr('Objectif ESG quantifié',ep+'%');
+    if(el2&&el2!=='—')qr('Précision',el2);
+  }
+  /* NIVEAU SOUHAITÉ */
+  sec('8 — NIVEAU DE CONNAISSANCE SOUHAITÉ');
+  qr('Choix du client',p.niveauSouhaite+(p.niveauSouhaite===p.connLabel?' (= niveau évalué)':' (dérogation — niveau évalué : '+p.connLabel+')'));
+  /* SIGNATURES */
+  np(40);y+=4;
+  doc.setDrawColor(200,169,110);doc.setLineWidth(0.4);doc.line(M,y,M+cw,y);y+=3;
+  doc.setFont('helvetica','normal');doc.setFontSize(7);sc(GREY);
+  doc.text('Ce questionnaire est établi conformément aux obligations MIF2 (Dir. 2014/65/UE) et à la loi du 6 janvier 1978. Confidentiel — Metentis Patrimoine SIREN 983 642 497.',M,y,{maxWidth:cw});
+  y+=10;np(28);
+  doc.setFont('helvetica','normal');doc.setFontSize(8.5);sc(BLACK);
+  doc.text('Date et signature du client :',M,y+8);
+  doc.text('Date et signature du conseiller :',M+cw/2+4,y+8);
+  doc.setDrawColor(150,150,150);doc.setLineWidth(0.3);
+  doc.line(M,y+20,M+cw/2-4,y+20);
+  doc.line(M+cw/2+4,y+20,M+cw,y+20);
+  /* PIEDS DE PAGE */
+  var n=doc.getNumberOfPages();
+  for(var i=1;i<=n;i++){
+    doc.setPage(i);
+    doc.setFont('helvetica','normal');doc.setFontSize(7);sc(GREY);
+    doc.text('Metentis Patrimoine · 6 rue Pouchet 75017 Paris · ORIAS 24001368 · CIF ANACOFI',W/2,292,{align:'center'});
+    doc.text('Page '+i+'/'+n,W-M,292,{align:'right'});
+  }
+  return doc;
+}
+function genPDF(){
+  document.getElementById('pdf-loading').style.display='flex';
+  try{var doc=buildPDF();doc.save(pdfFilename());}
+  catch(e){alert('Erreur PDF : '+e.message);}
+  finally{document.getElementById('pdf-loading').style.display='none';}
+}
+function collectAllAnswers(){
+  /* Collecte TOUTES les réponses du formulaire en un objet sérialisable */
+  function rv(name){ var e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:null; }
+  function rl2(name){
+    var e=document.querySelector('input[name="'+name+'"]:checked');
+    if(!e) return null;
+    var l=e.closest('label'); return l?l.innerText.replace(/^\s+/,'').split('\n')[0].trim():e.value;
+  }
+  function cl2(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(function(e){
+    var l=e.closest('label'); return {v:e.value,t:l?l.innerText.replace(/^\s+/,'').split('\n')[0].trim():e.value};
+  }); }
+  function fv(id){ var e=document.getElementById(id); return e?e.value.trim():'';}
+
+  return {
+    /* Identification */
+    nom:fv('id-nom'), prenom:fv('id-prenom'), ddn:fv('id-ddn'),
+    situation:fv('id-situation'), regime:fv('id-regime'),
+    enfants:fv('id-enfants'), profession:fv('id-profession'),
+    /* Situation financière */
+    rev:rv('rev'), pat:rv('pat'), charges:rv('charges'),
+    /* Q1-Q2 */
+    q1:cl2('q1'), q2:rl2('q2'),
+    /* Q3 */
+    q3_av1:rl2('q3_av1'), q3_av2:rl2('q3_av2'), q3_pea:rl2('q3_pea'), q3_per:rl2('q3_per'),
+    /* Q4 */
+    q4fe_k:rl2('q4fe_k'), q4fe_o:rv('q4fe_o'),
+    q4pm_k:rl2('q4pm_k'), q4pm_o:rv('q4pm_o'),
+    q4po_k:rl2('q4po_k'), q4po_o:rv('q4po_o'),
+    q4pa_k:rl2('q4pa_k'), q4pa_o:rv('q4pa_o'),
+    q4sc_k:rl2('q4sc_k'), q4sc_o:rv('q4sc_o'),
+    q4ci_k:rl2('q4ci_k'), q4ci_o:rv('q4ci_o'),
+    q4ps_k:rl2('q4ps_k'), q4ps_o:rv('q4ps_o'),
+    /* Q5-Q12 */
+    q5a:rv('q5a'), q5b:rl2('q5b'), q6:rv('q6'),
+    q7:rl2('q7'), q8:rl2('q8'), q8b:rl2('q8b'), q8c:rl2('q8c'),
+    q9:rl2('q9'), q10:rl2('q10'), q11:rl2('q11'), q12:rl2('q12'),
+    /* Q13-Q15 */
+    q13:cl2('q13'), q14:rl2('q14'), q15:rl2('q15'),
+    /* ESG */
+    q16:rl2('q16'), q17:rl2('q17'), q18:cl2('q18'),
+    esg_pct:fv('esg-pct'), esg_libre:fv('esg-libre'),
+    /* Niveau souhaité */
+    niveau_souhaite:rv('niveau_souhaite'),
+    /* Profil calculé */
+    profil: window._profil ? {
+      scConn:window._profil.scConn, scRisk:window._profil.scRisk,
+      connLabel:window._profil.connLabel, niveauSouhaite:window._profil.niveauSouhaite,
+      riskLabel:window._profil.riskLabel, esgLabel:window._profil.esgLabel,
+      esgCmt:window._profil.esgCmt, nom:window._profil.nom,
+      nowStr:window._profil.now.toISOString()
+    } : null
+  };
+}
+
+function sendEmailAuto(){
+  var p=window._profil;
+  if(!p) return;
+  var nom=p.nom;
+  var dateStr=p.now.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+
+  /* Sérialiser toutes les réponses en base64 */
+  try{
+    var data=collectAllAnswers();
+    var json=JSON.stringify(data);
+    var b64=btoa(unescape(encodeURIComponent(json)));
+
+    /* Construire l'URL avec le fragment #data=... */
+    /* Quand ce fichier est hébergé, remplacer FILE_URL par l'URL réelle */
+    var fileUrl=window.location.href.split('#')[0];
+    var shareUrl=fileUrl+'#data='+b64;
+
+    /* Envoyer l'URL par email via EmailJS */
+    if(typeof emailjs!=='undefined'){
+      emailjs.send('service_metentis','template_profil_inv',{
+        to_email:'thibaud.sarron@metentis-patrimoine.com',
+        client_nom:nom,
+        date_questionnaire:dateStr,
+        profil_connaissance:p.connLabel+' ('+p.scConn+'/100)',
+        profil_souhaite:p.niveauSouhaite,
+        profil_risque:p.riskLabel+' ('+p.scRisk+'/100)',
+        profil_esg:p.esgLabel,
+        lien_questionnaire:shareUrl
+      }).catch(function(){});
+    }
+  }catch(e){}
+}
+
+/* ── Lecture du fragment #data= au chargement ──
+   Si l'URL contient #data=..., on restaure le questionnaire
+   directement sur la page de résultats ── */
+function checkUrlData(){
+  var hash=window.location.hash;
+  if(!hash || hash.indexOf('#data=')===-1) return;
+  try{
+    var b64=hash.replace('#data=','');
+    var json=decodeURIComponent(escape(atob(b64)));
+    var data=JSON.parse(json);
+    if(!data.profil) return;
+
+    /* Restaurer _profil */
+    var p=data.profil;
+    p.now=new Date(p.nowStr);
+    window._profil=p;
+
+    /* Afficher directement la page résultats */
+    document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+    document.getElementById('prog-wrap').style.display='none';
+    document.getElementById('res-page').style.display='block';
+
+    /* Remplir les résultats */
+    var CONN_C={Novice:'Comme beaucoup d\'épargnants, vous connaissez essentiellement les produits les plus simples.',
+      'Informé':'Vous êtes plutôt à l\'aise avec les produits les plus simples et connaissez certains produits financiers plus complexes.',
+      'Expérimenté':'Vous êtes à l\'aise avec la finance. Vous comprenez le fonctionnement des marchés financiers.'};
+    var RISK_C={Sécuritaire:'Protection du capital impérative, quel que soit l\'horizon de placement.',
+      Défensif:'Faible tolérance au risque. Supports à faible volatilité uniquement.',
+      'Équilibré':'Accepte des fluctuations limitées pour améliorer les performances.',
+      Dynamique:'Accepte d\'importantes fluctuations en contrepartie d\'une espérance de gain élevée.',
+      Offensif:'Performance maximale, au risque de pertes importantes en capital.'};
+
+    document.getElementById('res-date').textContent='Questionnaire complété le '+p.now.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+    document.getElementById('res-client-info').innerHTML='<strong>Client :</strong> '+p.nom+' &nbsp;|&nbsp; <strong>Naissance :</strong> '+(data.ddn||'—')+' &nbsp;|&nbsp; <strong>Profession :</strong> '+(data.profession||'—');
+    document.getElementById('res-conn-badge').textContent=p.connLabel;
+    document.getElementById('res-conn-cmt').textContent=CONN_C[p.connLabel]||'';
+    document.getElementById('res-conn-sc').textContent='Score de connaissance : '+p.scConn+' / 100';
+    document.getElementById('res-souhaite-badge').textContent=p.niveauSouhaite;
+    document.getElementById('res-souhaite-cmt').textContent=p.niveauSouhaite===p.connLabel?'Niveau évalué confirmé.':'Dérogation choisie par le client (niveau évalué : '+p.connLabel+').';
+    document.getElementById('res-risk-badge').textContent=p.riskLabel;
+    document.getElementById('res-risk-cmt').textContent=RISK_C[p.riskLabel]||'';
+    document.getElementById('res-risk-sc').textContent='Score de risque : '+p.scRisk+' / 100';
+    document.getElementById('res-esg-badge').textContent=p.esgLabel;
+    document.getElementById('res-esg-cmt').textContent=p.esgCmt;
+
+    /* Marqueurs de position */
+    var connPct={Novice:16.6,Informé:50,Expérimenté:83.3};
+    var riskPct={Sécuritaire:10,Défensif:30,'Équilibré':50,Dynamique:70,Offensif:90};
+    setMarker('mark-conn', connPct[p.connLabel]||50);
+    setMarker('mark-risk', riskPct[p.riskLabel]||50);
+
+    /* Niveaux actifs */
+    ['pl-nov','pl-inf','pl-exp'].forEach(function(id){document.getElementById(id).classList.remove('active');});
+    var connId={Novice:'pl-nov',Informé:'pl-inf',Expérimenté:'pl-exp'};
+    if(connId[p.connLabel]) document.getElementById(connId[p.connLabel]).classList.add('active');
+    ['pl-sec','pl-def','pl-eq','pl-dyn','pl-off'].forEach(function(id){document.getElementById(id).classList.remove('active');});
+    var riskId={Sécuritaire:'pl-sec',Défensif:'pl-def','Équilibré':'pl-eq',Dynamique:'pl-dyn',Offensif:'pl-off'};
+    if(riskId[p.riskLabel]) document.getElementById(riskId[p.riskLabel]).classList.add('active');
+
+    /* Ajouter bandeau conseiller avec bouton PDF prominent */
+    var banner=document.createElement('div');
+    banner.style.cssText='background:#1a3a2e;color:white;padding:16px 24px;border-radius:10px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px';
+    banner.innerHTML='<div><strong style="color:#c8a96e;font-size:1rem">Vue Conseiller — Questionnaire reçu</strong><div style="font-size:.85rem;margin-top:4px;opacity:.8">Toutes les réponses du client ont été restaurées.</div></div>'
+      +'<button onclick="genPDF()" style="background:#c8a96e;color:white;border:none;padding:12px 28px;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer">📄 Générer le PDF</button>';
+    document.getElementById('res-page').insertBefore(banner, document.getElementById('res-page').firstChild);
+
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){
+    console.error('Erreur restauration:', e);
+  }
+}
+
+
+/* ── ADMIN ── */
+function openAdmin(){
+  document.getElementById('admin-overlay').style.display='flex';
+  document.getElementById('admin-pw-wrap').style.display='flex';
+  document.getElementById('admin-content').style.display='none';
+  document.getElementById('admin-pw-input').value='';
+  document.getElementById('admin-pw-err').style.display='none';
+}
+function closeAdmin(){
+  document.getElementById('admin-overlay').style.display='none';
+}
+function checkAdminPw(){
+  const pw=document.getElementById('admin-pw-input').value;
+  if(pw==='Metentis-2026'){
+    document.getElementById('admin-pw-wrap').style.display='none';
+    document.getElementById('admin-content').style.display='block';
+    Object.keys(CFG).forEach(k=>{
+      const el=document.getElementById(k);
+      if(el) el.value=CFG[k];
+    });
+  } else {
+    document.getElementById('admin-pw-err').style.display='block';
+  }
+}
+function saveAdmin(){
+  Object.keys(CFG).forEach(k=>{
+    const el=document.getElementById(k);
+    if(el) CFG[k]=parseInt(el.value)||CFG[k];
+  });
+  closeAdmin();
+  alert('✓ Paramètres de scoring mis à jour pour cette session.');
+}
+
+
+/* ── Fermeture overlay admin ── */
+document.getElementById('admin-overlay').addEventListener('click',function(e){
+  if(e.target===this) closeAdmin();
+});
+
+/* ── Init ── */
+updateProgress(0);
+
+/* Init */
+updateProgress(0);
+checkUrlData(); /* Restauration si URL avec #data= */
+document.getElementById('admin-overlay').addEventListener('click', function(e){
+  if(e.target===this) closeAdmin();
+});
+</script>
+</body>
+</html>
